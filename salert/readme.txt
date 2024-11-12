@@ -4,8 +4,9 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tested up to: 6.6.2
 Tags: woocommerce, notification, fake notification, sales notification
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 
+Display beautiful popup sales notification on your website with just few clicks.
 
 == Description ==
 Salert is a plugin for sales notification to the customers. It also has feature to generate fake sales notification to engage your visitors. The plugin has full control with many customization options. This is an effective marketing tool designed to increase the conversion of site visitors into customers. It uses cutting edge technologies to provide the smoother user experience.This plugins can generate notification without WooCommerce plugin.
@@ -13,16 +14,16 @@ Salert is a plugin for sales notification to the customers. It also has feature 
 
 === Features === 
 
-Create fake sales notification to visitors
-Customize notification box color, size, font color, font size etc.
-Define position to display notification on the screen.
-Live preview changes
-Background options
-Typography options
-Animation Options
-Translation Ready
-Lifetime Free support
-Constant updates
+* Create fake sales notification to visitors.
+* Customize notification box color, size, font color, font size etc.
+* Define position to display notification on the screen.
+* Live preview changes.
+* Background options.
+* Typography options.
+* Animation Options.
+* Translation Ready.
+* Lifetime Free support.
+* Constant updates.
 
 == Installation ==
 1. Unzip salert.zip
@@ -37,6 +38,9 @@ This plugin provides the ability to display popup notifications, alerts and sale
 Yes
 
 == Changelog ==
+
+= 1.2.7 =
+- Minor bug fixed
 
 = 1.2.6 =
 - Minor bug fixed
