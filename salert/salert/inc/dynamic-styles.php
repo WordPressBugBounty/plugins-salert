@@ -45,10 +45,10 @@ $border_color = $salert_settings['border-color'];
 $border_width = $salert_settings['border-width'];
 $border_radius = $salert_settings['border-radius'];
 $resp = $salert_settings['enable-resp'];
-if( $resp == 1 ) {
+if($resp==1){
 	$display = 'block';
 }else{
-	$display = 'none !important';
+	$display = 'none';
 }
 if($border_enable==1){
   $salert_border_css = "
@@ -81,7 +81,7 @@ $dynamic_styles = "#salertWrapper .popup_template{
     				padding:{$inner_pad}px;
   			      }
 			      @media (max-width: 767px){ 
-                     #salertWrapper { display: {$display};} 
+                     #salertWrapper { display: {$display} !important;} 
                   }
                    "; 
 

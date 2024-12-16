@@ -2,9 +2,9 @@
 Contributors: wpoperations
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tested up to: 6.7.1
+Tested up to: 6.6.2
 Tags: woocommerce, notification, fake notification, sales notification
-Stable tag: 1.2.8
+Stable tag: 1.2.7
 
 Display beautiful popup sales notification on your website with just few clicks.
 
@@ -38,9 +38,6 @@ This plugin provides the ability to display popup notifications, alerts and sale
 Yes
 
 == Changelog ==
-
-= 1.2.8 =
-- Minor bug fixed
 
 = 1.2.7 =
 - Minor bug fixed
