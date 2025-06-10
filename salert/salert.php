@@ -4,8 +4,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
   Plugin Name: Salert
   Plugin URI:  https://wpoperation.com/plugins/salert/
   Description: The plugin will generate fake sales notifications, which will help to boost your sales.Also works without WooCommerce Plugin.
-  Version:     1.2.8
-  Tested up to: 6.7.1
+  Version:     1.2.9
+  Tested up to: 6.8.1
   Author:      WPoperation
   Author URI:  https://wpoperation.com/
   License:     GPL2 or later
@@ -21,7 +21,7 @@ defined('SALERT_BACK_CSS_DIR') or define('SALERT_BACK_CSS_DIR',plugin_dir_url(__
 defined('SALERT_BACK_JS_DIR') or define('SALERT_BACK_JS_DIR',plugin_dir_url(__FILE__).'/assets/backend/js');
 defined('SALERT_PATH') or define('SALERT_PATH',plugin_dir_path(__FILE__));
 defined('SALERT_DIR') or define('SALERT_DIR',plugin_dir_url(__FILE__));
-defined('SALERT_VERSION') or define('SALERT_VERSION','1.2.8');
+defined('SALERT_VERSION') or define('SALERT_VERSION','1.2.9');
 /*
 **Require File Directories
 */
