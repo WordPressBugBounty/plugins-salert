@@ -645,3 +645,37 @@ li.tab:after {
     width: 80px;
     border-radius: 50%;
 }
+
+
+.sale_alert_wrapper .close-btn {
+  position: absolute;
+  top: -14px;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  background: #0c0e1f;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.sale_alert_wrapper .popup_box:hover .close-btn {
+  background: #f8fafc;
+  color: #64748b;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.sale_alert_wrapper .close-btn svg {
+  width: 14px;
+  height: 14px;
+}

@@ -2,12 +2,13 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
- 
+ .sale_alert_wrapper{
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+ }
 #salertWrapper .popup_template {
     background-color: #e0e0e0; 
     bottom: 20px;
     border-radius: 0;
-    overflow: hidden;
 }
 
 #salertWrapper  .popup_position {
@@ -45,19 +46,22 @@
     padding: 10px;
     padding-right: 50px !important;
     width: 100%; 
-    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 #salertWrapper figure{
     margin: 0; 
     width: 75px; 
-    max-height: 65px; 
+    height: 75px; 
     overflow: hidden;
-    float: left;
+    
 }
 
-#salertWrapper .imageOnRight figure{
-    float: right;
+#salertWrapper .imageOnRight {
+    flex-direction: row-reverse;
 }
 
 #salertWrapper .textOnly  figure{
@@ -73,13 +77,13 @@
 
 #salertWrapper .salert-content-wrap{
     width: calc(100% - 85px);    
-    float: right;
+    
     font-size: 14px;
     color: #1e1e1e;
 }
 
 #salertWrapper .imageOnRight .salert-content-wrap{
-    float: left;
+    
 }
 
 #salertWrapper .textOnly .salert-content-wrap{
@@ -105,21 +109,37 @@
 }
 
 /* Close Button */
-.popup_template .popup-item .btn-close{
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    color: #000;
-    font-size: 22px;
-    height: 15px;
-    width: 15px;
-    text-align: center;
-    line-height: 12px;
-    z-index: 999999;
+.sale_alert_wrapper .close-btn {
+  position: absolute;
+  top: -14px;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  background: #0c0e1f;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: scale(0);
 }
-.popup_template .popup-item .close img{
-    max-width: 100%;
+
+.sale_alert_wrapper .popup_box:hover .close-btn {
+  background: #f8fafc;
+  color: #64748b;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.sale_alert_wrapper .close-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 @media screen and ( max-width: 767px){

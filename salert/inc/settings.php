@@ -449,12 +449,12 @@ class Salert_Admin_Settings {
 				    * Preview Section
 				    * =========================*/
 				    ?>
-		 			<div class="salert-backend-preview">
+		 			<div class="salert-backend-preview sale_alert_wrapper">
 		 				<img src="<?php echo plugin_dir_url( __FILE__ ).'images/desktop.png';?>" style="width: 100%">
 		 				<div class="popup_position bottomRight" >
 		 					<div class="popup_template clearfix animated border radius" id="popup_template">
 		 					   <div class="popup-item clearfix">
-		 					   	    <span class="close"><img src="<?php echo SALERT_DIR;?>/assets/close-icon.png" alt="close"/></span>
+		 					   	    <span class="close btn-close"><button class="close-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span>
 			 						<img class="pimg" src="<?php echo plugin_dir_url( __FILE__ ).'images/100.png';?>">
 			 						<p>
 			 							<?php esc_html_e('Someone Purchased an Item','salert'); ?> <br>

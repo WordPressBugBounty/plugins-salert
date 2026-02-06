@@ -39,6 +39,9 @@ Yes
 
 == Changelog ==
 
+= 1.3.0 =
+- Minor design improvements
+
 = 1.2.9 =
 - Minor bug fixed
 

@@ -58,7 +58,7 @@ $final_content  = strtr($popup_contents, array("[name]"=>$name, "[country]"=>$co
 <div class="popup-item <?php echo esc_attr($image_position);?> <?php echo ($image_url == '') ? 'textOnly' : ''; ?> clearfix">
     <?php 
     if($salert_settings['close-btn']==1){
-        echo '<span class="btn-close"><img src="'.SALERT_DIR.'/assets/close-icon.png" alt="close"/></span>';
+        echo '<span class="close btn-close"><button class="close-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span>';
     }
     if($product_url!=''){?>
     <a href="<?php echo esc_url($product_url);?>">

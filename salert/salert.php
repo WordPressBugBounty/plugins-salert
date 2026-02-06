@@ -4,8 +4,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
   Plugin Name: Salert
   Plugin URI:  https://wpoperation.com/plugins/salert/
   Description: The plugin will generate fake sales notifications, which will help to boost your sales.Also works without WooCommerce Plugin.
-  Version:     1.2.9
-  Tested up to: 6.8.1
+  Version:     1.3.0
+  Tested up to: 6.9
   Author:      WPoperation
   Author URI:  https://wpoperation.com/
   License:     GPL2 or later
@@ -21,7 +21,7 @@ defined('SALERT_BACK_CSS_DIR') or define('SALERT_BACK_CSS_DIR',plugin_dir_url(__
 defined('SALERT_BACK_JS_DIR') or define('SALERT_BACK_JS_DIR',plugin_dir_url(__FILE__).'/assets/backend/js');
 defined('SALERT_PATH') or define('SALERT_PATH',plugin_dir_path(__FILE__));
 defined('SALERT_DIR') or define('SALERT_DIR',plugin_dir_url(__FILE__));
-defined('SALERT_VERSION') or define('SALERT_VERSION','1.2.9');
+defined('SALERT_VERSION') or define('SALERT_VERSION','1.3.0');
 /*
 **Require File Directories
 */
@@ -90,7 +90,7 @@ if(!class_exists('Salert')){
         public function salert_display_wrapper(){
             $salert_settings = get_option('salert_save_settings');
             ?>
-            <div id="salertWrapper">
+            <div id="salertWrapper" class="sale_alert_wrapper">
                 <div class="popup_position <?php echo $salert_settings['popup-position'];?>">
                     <div class="popup_box">
                         <div class="popup_template animated clearfix" id="popup_template" style="display: none;">
