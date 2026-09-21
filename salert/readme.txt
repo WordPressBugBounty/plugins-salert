@@ -1,43 +1,114 @@
-﻿=== SALERT – Fake Sales Notification WooCommerce ===
+=== SALERT – Social Proof Notifications & Live Sales Popup ===
 Contributors: wpoperations
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tested up to: 7.0
-Tags: woocommerce, notification, fake notification, sales notification
-Stable tag: 1.3.1
+Tested up to: 7.1.1
+Tags: sales notification, woocommerce, social proof, popup notification, recent sales
+Stable tag: 1.3.2
 
-Display beautiful popup sales notification on your website with just few clicks.
+Boost trust and conversions with beautiful sales notification popups. Show recent purchases as social proof, with or without WooCommerce.
 
 == Description ==
-Salert is a plugin for sales notification to the customers. It also has feature to generate fake sales notification to engage your visitors. The plugin has full control with many customization options. This is an effective marketing tool designed to increase the conversion of site visitors into customers. It uses cutting edge technologies to provide the smoother user experience.This plugins can generate notification without WooCommerce plugin.
 
+**Salert** is a lightweight sales notification plugin that shows "Someone just purchased…" popups to your visitors. Social proof like this builds trust, creates urgency and helps turn more store visitors into customers.
 
-=== Features === 
+Set it up in minutes: choose your position, colors and animation, see every change in the **live preview**, and save. No coding needed, and it works **without WooCommerce**, so you can use it on any WordPress site.
 
-* Create fake sales notification to visitors.
-* Customize notification box color, size, font color, font size etc.
-* Define position to display notification on the screen.
-* Live preview changes.
-* Background options.
-* Typography options.
-* Animation Options.
-* Translation Ready.
-* Lifetime Free support.
-* Constant updates.
+Get the latest news and Pro features at [WPoperation](https://wpoperation.com/plugins/sale-alert/).
+
+= Why use sales notification popups? =
+
+* **Build trust** – show that real people are buying from you.
+* **Create urgency** – recent activity nudges hesitant visitors to act.
+* **Increase conversions** – social proof is one of the most effective ways to boost sales.
+
+= Free Features =
+
+* Sales notification popups for your visitors, with or without WooCommerce.
+* Live preview of every design change in the settings screen.
+* Choose where the popup appears on the screen.
+* Custom names, countries, products, time period and "ago" text.
+* Set the delay before the first popup, how long it stays, and the interval between popups.
+* Customize background color, text color, width, padding and font size.
+* Border, border radius and box shadow options.
+* Image position and image style options (square or circle).
+* Text transform and typography options.
+* Popup entrance animations.
+* Optional close button.
+* Fully responsive and mobile friendly.
+* Works with all major browsers.
+* Translation ready.
+* Lifetime free support and constant updates.
+
+= Salert Pro Features =
+
+Ready to take your social proof further? **[Upgrade to Salert Pro](https://wpoperation.com/plugins/sale-alert/)** and unlock:
+
+* **Real-time sales notifications** – display your actual WooCommerce orders as they happen.
+* **Add real WooCommerce products** to your notifications.
+* **Popup with sound** – grab attention with an audio alert.
+* **Analytics dashboard** – track how many visitors click your notifications.
+* **Review Popup** – Display user's review of the product as a popup.
+* **Multiple modern templates** – professional designs in one click.
+* **Trust badges** – add credibility to every popup.
+* **Notification timer** – control when notifications appear.
+* **Full multilingual support** – works with WPML and Polylang.
+* **Fast and friendly premium support.**
+
+= Free vs Pro =
+
+| Feature | Free | Pro |
+|---|---|---|
+| Sales notification popups | Yes | Yes |
+| Live preview | Yes | Yes |
+| Real-time WooCommerce sales | No | Yes |
+| Real WooCommerce products | No | Yes |
+| Popup with sound | No | Yes |
+| Analytics dashboard | No | Yes |
+| Review Popup | No | Yes |
+| Multiple templates | No | Yes |
+| Trust badges | No | Yes |
+| Notification timer | No | Yes |
+| Multilingual | Partial | Full |
+| Premium support | No | Yes |
+
+= 🚀 [Upgrade to Salert Pro Now](https://wpoperation.com/plugins/sale-alert/) =
 
 == Installation ==
-1. Unzip salert.zip
-2. Upload all the files to the /wp-content/plugins/salert
-3. Activate the plugin through the 'Plugins' menu in WordPress.
-4. For customizing the plugin's settings, click on Salert option menu in Wordpress left admin menu.
+
+1. Upload the `salert` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress Plugins screen.
+2. Activate the plugin through the **Plugins** menu in WordPress.
+3. Go to **Salert** in the admin menu to configure your settings.
+4. Tick **Enable Popup**, adjust the design with the live preview, and click **Save Settings**.
 
 == Frequently Asked Questions ==
+
 = What does this plugin do? =
-This plugin provides the ability to display popup notifications, alerts and sales notification to visitors
-= Does it works without WooCommerce? =
-Yes
+It displays popup sales notifications to your visitors, such as "John from Australia has just purchased…", to build social proof and increase conversions.
+
+= Does it work without WooCommerce? =
+Yes. The free version works on any WordPress site and does not require WooCommerce.
+
+= Can I show my real WooCommerce orders? =
+Real-time order notifications and real WooCommerce products are available in [Salert Pro](https://wpoperation.com/plugins/sale-alert/).
+
+= Can I customize how the popup looks? =
+Yes. Change colors, size, border, shadow, image style, animation and position, and preview everything live before saving.
+
+= Is it mobile friendly? =
+Yes, the popups are fully responsive.
+
+= Is the plugin translation ready? =
+Yes. Full WPML and Polylang support is included in Pro.
+
+= Where can I get support? =
+Create a ticket at [wpoperation.com/contact](https://wpoperation.com/contact).
 
 == Changelog ==
+
+= 1.3.2 =
+- Refined plugin dashboard.
+- Minor improvements.
 
 = 1.3.1 =
 - Tested with latest version of WordPress.

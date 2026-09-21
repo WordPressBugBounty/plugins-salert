@@ -1,681 +1,345 @@
 /**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
+ * Salert Admin — Modern UI (2026 redesign)
+ * Uses WordPress admin design tokens with graceful fallbacks.
  */
 
-.clear {
-    clear: both;
+.salert-wrap {
+	--sal-accent: #2271b1;
+	--sal-accent-hover: #135e96;
+	--sal-green: #00a32a;
+	--sal-red: #d63638;
+	--sal-bg: #f0f0f1;
+	--sal-card: #ffffff;
+	--sal-border: #dcdcde;
+	--sal-text: #1d2327;
+	--sal-muted: #646970;
+	--sal-radius: 8px;
+	margin-right: 12px;
+	color: var(--sal-text);
 }
 
-div#salert-settings {
-    width: 98%;
+/* ===== Header ===== */
+.salert-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+	background: linear-gradient(120deg, #1d2327 0%, #2c3338 100%);
+	border-radius: var(--sal-radius);
+	padding: 20px 24px;
+	margin-bottom: 20px;
 }
-#salert-settings-form{
-    max-width: 1200px;
-    margin: 0 auto;
+.salert-header-brand { display: flex; align-items: center; gap: 14px; }
+.salert-header-logo {
+	width: 48px; height: 48px;
+	background: linear-gradient(135deg, #2271b1, #00a32a);
+	border-radius: 12px;
+	color: #fff; font-size: 26px; font-weight: 700;
+	display: flex; align-items: center; justify-content: center;
+	box-shadow: 0 4px 14px rgba(34, 113, 177, .45);
 }
-.salert-element-settings-wrap{
-    background: #fff;
+.salert-header h1 {
+	color: #fff; font-size: 22px; margin: 0; padding: 0; line-height: 1.2;
 }
-
-/* Tabs */
-
-
-#salert-settings .salert-settings-tab {
-    display: block;
-    background: #404040;
-}
-
-#salert-settings .salert-settings-tab ul {
-    margin: 0px;
-    padding: 0;
-    position: relative;
-    z-index: 2;
-}
-
-#salert-settings .salert-settings-tab ul li {
-    cursor: pointer;
-    display: inline-block;
-    font-size: 16px;
-    padding: 35px 25px;
-    text-align: center;
-    color: #fff;
-    margin-bottom: 0;
-    position: relative;
-    -webkit-transition: all 0.3s ease-in;
-       -moz-transition: all 0.3s ease-in;
-        -ms-transition: all 0.3s ease-in;
-         -o-transition: all 0.3s ease-in;
-            transition: all 0.3s ease-in;
-}
-#salert-settings .salert-settings-tab ul li:hover{
-    background: #525252;
+.salert-header p { color: #a7aaad; margin: 2px 0 0; font-size: 13px; }
+.salert-header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.salert-version-pill {
+	background: rgba(255,255,255,.12); color: #c3c4c7;
+	font-size: 12px; padding: 4px 10px; border-radius: 999px;
 }
 
-#salert-settings .salert-settings-tab ul li.active {
-    background-color: #fff;
+/* ===== Buttons ===== */
+.salert-btn-primary,
+.salert-btn-secondary,
+.salert-btn-block {
+	display: inline-flex; align-items: center; gap: 6px;
+	text-decoration: none; border-radius: 6px;
+	font-size: 13px; font-weight: 500; line-height: 1;
+	padding: 9px 16px; transition: all .15s ease; box-sizing: border-box;
+}
+.salert-btn-primary { background: var(--sal-green); color: #fff !important; }
+.salert-btn-primary:hover { background: #00731c; color: #fff; transform: translateY(-1px); }
+.salert-btn-secondary { background: transparent; color: #72aee6 !important; box-shadow: inset 0 0 0 1px #50575e; }
+.salert-btn-secondary:hover { background: rgba(114, 174, 230, .1); color: #72aee6; }
+.salert-btn-block { width: 100%; justify-content: center; }
+.dashicons { width: 18px; height: 18px; font-size: 18px; }
+
+/* ===== Layout ===== */
+.salert-layout {
+	display: grid;
+	grid-template-columns: 200px minmax(0, 1fr) 440px;
+	gap: 20px;
+	align-items: start;
 }
 
-#salert-settings .tab-pane {
-    padding: 30px 20px;
-    background-color: #fff;
-    border: 1px solid #e2e2e2;
-    border-width: 0 1px 1px;
-}
-
-
-
-#salert-settings input[type=text],
-#salert_time_meta input[type=text],
-#salert-settings input[type=search],
-#salert-settings input[type=radio],
-#salert-settings input[type=tel],
-#salert-settings input[type=time],
-#salert-settings input[type=url],
-#salert-settings input[type=week],
-#salert-settings input[type=password],
-#salert-settings input[type=checkbox],
-#salert-settings input[type=color],
-#salert-settings input[type=date],
-#salert-settings input[type=datetime],
-#salert-settings input[type=datetime-local],
-#salert-settings input[type=email],
-#salert-settings input[type=month],
-#salert-settings input[type=number],
-#salert_time_meta input[type=number],
-#salert-settings select,
-#salert-settings textarea {
-    height: initial;
-    margin: 5px;
-    padding: 7px;
-    display: inline-block;
-    vertical-align: middle;
-    min-width: 150px;
-}
-
-#salert-settings input[type=number] {
-    width: 85px;
-    text-align: center;
-    min-width: initial;
-}
-
-#salert-settings .wp-picker-container {
-    display: inline-block;
+/* ===== Sidebar nav ===== */
+.salert-nav {
+	position: sticky; top: 46px;
+	display: flex; flex-direction: column; gap: 4px;
+	background: #fff;
     padding: 10px;
 }
+.salert-nav-item {
+	display: flex; align-items: center; gap: 8px;
+	background: transparent; border: none; cursor: pointer;
+	text-align: left; font-size: 13.5px; color: var(--sal-text);
+	padding: 10px 14px; border-radius: 6px;
+	transition: all .15s ease;
+}
+.salert-nav-item:hover { background: #fff; }
+.salert-nav-item.active {
+	background: var(--sal-accent); color: #fff;
+	box-shadow: 0 2px 8px rgba(34,113,177,.35);
+}
+.salert-nav-card {
+	margin-top: 16px;
+	background: linear-gradient(160deg, #f0f6fc, #fff);
+	border: 1px solid var(--sal-border); border-radius: var(--sal-radius);
+	padding: 16px; box-sizing: border-box; overflow: hidden;
+}
+.salert-nav-card h4 { margin: 0 0 6px; font-size: 14px; }
+.salert-nav-card p { font-size: 12.5px; color: var(--sal-muted); margin: 0 0 12px; line-height: 1.5; }
 
-#salert-settings input[type=radio],
-#salert-settings input[type=checkbox] {
-    min-width: initial;
-    width: 25px;
-    height: 25px;
-}
+/* ===== Cards & panes ===== */
+.salert-pane { display: none; flex-direction: column; gap: 20px; }
+.salert-pane.active { display: flex; animation: salertFade .25s ease; }
+@keyframes salertFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-#salert-settings input[type=checkbox]:checked:before {
-    margin: 0;
+.salert-card {
+	background: var(--sal-card);
+	border: 1px solid var(--sal-border);
+	border-radius: var(--sal-radius);
+	box-shadow: 0 1px 2px rgba(0,0,0,.04);
+	overflow: hidden;
 }
+.salert-card-head {
+	display: flex; align-items: center; justify-content: space-between;
+	padding: 14px 20px;
+	border-bottom: 1px solid var(--sal-border);
+	background: #f6f7f7;
+}
+.salert-card-head h2 {
+	margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: .04em;
+	display: flex; align-items: center; gap: 8px; color: var(--sal-text);
+}
+.salert-card-head h2 .dashicons { color: var(--sal-accent); }
+.salert-card-body { padding: 20px; }
 
-.salert-auto-settings .products-meta-section-wrapper h3 {
-    margin: 0 0 10px;
+/* ===== Fields ===== */
+.salert-field-grid {
+	display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 16px;
 }
+.salert-field { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.salert-field-title { font-weight: 600; font-size: 13px; }
+.salert-field-desc { font-size: 12px; color: var(--sal-muted); line-height: 1.45; }
 
+#salert-settings-form input[type="text"],
+#salert-settings-form input[type="number"],
+#salert-settings-form select,
+#salert-settings-form textarea {
+	max-width: 100%; border-radius: 4px;
+}
+.salert-input-sm { width: 80px; }
 
-.clearfix::after {
-    content: "";
-    clear: both;
-    display: table;
+/* Toggle switch */
+.salert-switch { position: relative; display: inline-flex; align-self: flex-start; }
+.salert-switch input[type="checkbox"] { position: absolute; opacity: 0; margin: 0; }
+.salert-switch-track {
+	width: 40px; height: 22px; background: #c3c4c7; border-radius: 999px;
+	position: relative; cursor: pointer; transition: background .2s ease;
+	display: block; flex-shrink: 0;
 }
+.salert-switch-thumb {
+	position: absolute; top: 2px; left: 2px;
+	width: 18px; height: 18px; background: #fff; border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0,0,0,.3);
+	transition: left .2s ease;
+}
+.salert-switch input:checked + .salert-switch-track { background: var(--sal-green); }
+.salert-switch input:checked + .salert-switch-track .salert-switch-thumb { left: 20px; }
+.salert-switch input:focus-visible + .salert-switch-track { outline: 2px solid var(--sal-accent); outline-offset: 2px; }
+.salert-switch input:disabled + .salert-switch-track { opacity: .5; cursor: not-allowed; }
 
-.salert-main-settings .general-settings-section{
-    float: left;
-    width: 46%;
+/* Toggle-style field rows */
+.salert-field-premium { opacity: .75; }
+.salert-pro-badge {
+	background: var(--sal-green); color: #fff; font-size: 10px; font-weight: 700;
+	letter-spacing: .06em; border-radius: 4px; padding: 3px 7px; align-self: center;
 }
+.salert-badge-inline { align-self: center; }
 
-/* General Tabs */
-ul.general-tab-wrap{
-    width: 30%;
-    float: left;
-    background: #063044;
-    margin-top: 0;
-}
-.general-tab-wrap li{
-    display: block;
-    padding: 15px;
-    font-size: 15px;
-    cursor: pointer;
-    color: #fff;
-    border-bottom: 1px solid #aeaeae;
-    margin: 0;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-}
-.general-tab-wrap li.active {
-    background: #0073aa;
-    border-left: 3px solid #00bd06;
-}
-.general-tab-pane {
-    width: 67%;
-    float: right;
-    border-left: 3px solid #ccc;
-    padding-left: 12px;
-}
-.main-title {
-    font-size: 15px;
-    font-weight: 700;
-    padding: 15px 0 15px 0;
-    text-transform: uppercase;
-    border-bottom: 1px solid #ccc;
-}
-fieldset.salert-input {
-    border: 0;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    border-bottom: 1px solid #ccc;
-} 
-fieldset.salert-input:last-child {
-    border: none;
-}
-.salert-input label {
-    display: inline-block;
-    width: 120px;
-    font-weight: 600;
-}  
-fieldset.salert-input.bg-img label {
-    float: left;
-}
-small.title-desc {
-    font-size: 14px;
-    font-style: italic;
-    color: #afaaaa;
-}
-.salert-main-settings.display .salert-input label {
-    width: 300px;
-    font-size: 16px;
-} 
-.salert-main-settings.display fieldset.salert-input {
-    padding-bottom: 34px;
-    margin-bottom: 20px;
-}
-.salert-main-settings.display fieldset.salert-input textarea {
-    width: 70%;
-}
-/*---------- preview ------*/
+.salert-inline-range { display: inline-flex; align-items: center; gap: 8px; }
+.salert-inline-range em { font-style: normal; color: var(--sal-muted); font-size: 12px; }
+.salert-inline-range input[type="number"] { width: 85px; }
 
-#salert-settings .salert-backend-preview {
-    margin-top: 6px;
-    float: right;
-    width: 52%;
-    min-height: 515px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    position: relative;
-}
+.salert-divider { height: 1px; background: var(--sal-border); margin: 18px 0; }
 
-#salert-settings .popup_position {
-    position: absolute;
+/* Border options collapse */
+.salert-border-options {
+	margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--sal-border);
+	display: none;
 }
+.salert-border-options.visible { display: block; animation: salertFade .2s ease; }
 
-#salert-settings .popup_position.bottomRight {
-    right: 33px;
-    bottom: 197px;
+/* Premium upsell row */
+.salert-premium-row {
+	margin-top: 16px;
+	display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+	background: #fcf9e8; border: 1px solid #f0e6b4; border-left: 3px solid #dba617;
+	border-radius: 6px; padding: 10px 14px; font-size: 12.5px; color: #61423a;
 }
+.salert-premium-row .dashicons { color: #dba617; }
+.salert-premium-row a { text-decoration: none; font-weight: 600; color: var(--sal-accent) !important; }
 
-#salert-settings .popup_position.topLeft {
-    left: 33px;
-    top: 30px;
+/* ===== Products repeater ===== */
+.single-product {
+	display: flex; align-items: center; gap: 14px;
+	border: 1px solid var(--sal-border); border-radius: 6px;
+	padding: 12px; margin-bottom: 10px; background: #fafafa;
 }
-#salert-settings .popup_position.topRight {
-    right: 33px;
-    top: 30px;
+.salert-product-thumb {
+	width: 56px; height: 56px; flex-shrink: 0;
+	background: #f0f0f1 url() center/cover no-repeat;
+	border-radius: 6px; border: 1px solid var(--sal-border);
+	overflow: hidden; display: flex; align-items: center; justify-content: center;
 }
+.salert-product-thumb img { max-width: 100%; max-height: 100%; display: block; }
+.salert-product-fields { flex: 1; display: grid; gap: 8px; }
+.salert-product-fields input[type="text"] { width: 100%; }
+.salert-product-row { display: flex; gap: 6px; align-items: center; }
+.salert-product-row input { flex: 1; }
+.salert-upload-btn { display: inline-flex !important; align-items: center; justify-content: center; padding: 0 8px !important; height: 30px; }
+.delete-product {
+	color: var(--sal-red) !important; flex-shrink: 0;
+	display: inline-flex; padding: 6px; border-radius: 4px;
+}
+.delete-product:hover { background: rgba(214, 54, 56, .1); }
+.docopy-table-product { display: inline-flex !important; align-items: center; gap: 6px; }
 
-#salert-settings .popup_position.bottomLeft {
-    left: 33px;
-    bottom: 197px;
+/* Tags */
+.salert-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.salert-tags code {
+	background: #f0f0f1; border: 1px solid var(--sal-border); border-radius: 4px;
+	padding: 3px 8px; font-size: 12px; color: var(--sal-accent); cursor: pointer;
 }
+.salert-tags code:hover { background: #e6ecf2; }
 
-#salert-settings .popup_position img.pimg {
-    border: none;
-    height: 80px;
-    margin-top: 4px;
-    width: 100px;
-    background-color: beige;
+/* ===== Preview column ===== */
+.salert-preview-col { min-width: 0; }
+.salert-preview-sticky { position: sticky; top: 46px; }
+.salert-preview-stage {
+	background:
+		linear-gradient(180deg, #3858a6 0%, #3858a6 90px, #f6f7f7 90px),
+		repeating-linear-gradient(45deg, #f0f0f1, #f0f0f1 10px, #e8e8e9 10px, #e8e8e9 20px);
+	min-height: 420px; position: relative; overflow: hidden;
 }
+.salert-device { margin: 24px auto; width: 92%; max-width: 400px; background: #fff; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.15); overflow: hidden; }
+.salert-device-bar { display: flex; gap: 5px; padding: 8px 10px; background: #eceff1; }
+.salert-device-bar span { width: 9px; height: 9px; border-radius: 50%; background: #cfd6da; }
+.salert-device-bar span:first-child { background: #ff5f57; }
+.salert-device-bar span:nth-child(2) { background: #febc2e; }
+.salert-device-bar span:nth-child(3) { background: #28c840; }
+.salert-device-body { position: relative; height: 320px; background: #fff; }
+#salert-preview-position { position: absolute; right: 10px; bottom: 12px; transition: all .25s ease; }
+#salert-preview-position.pos-topLeft { top: 12px; left: 10px; right: auto; bottom: auto; }
+#salert-preview-position.pos-topRight { top: 12px; right: 10px; bottom: auto; }
+#salert-preview-position.pos-bottomLeft { bottom: 12px; left: 10px; right: auto; }
+#salert-preview-position.pos-bottomRight { bottom: 12px; right: 10px; }
 
-#salert-settings .popup_position p {
-    float: right;
-    margin-left: 16px;
-    font-size: 14px;
-    margin: 11px 0px 0px 15px;
+/* Popup preview (reuses frontend classes for fidelity) */
+.salert-preview-card .popup_template {
+	background-color: #747474; background-size: cover; background-repeat: no-repeat;
+	background-position: center; overflow: hidden; display: inline-block; max-width: 250px;
 }
+.salert-preview-card .popup-item { padding: 10px; padding-right: 42px; position: relative; }
+.salert-preview-card .popup_template img.pimg { border: none; height: 60px; width: 76px; object-fit: cover; float: left; margin: 4px 10px 0 0; background-color: beige; }
+.salert-preview-card .popup_template.textOnly img.pimg { display: none; }
+.salert-preview-card .popup_template.imageOnRight img.pimg { float: right; margin: 4px 0 0 10px; }
+.salert-preview-card .popup_template p { margin: 8px 0 0; font-size: 13px; line-height: 1.5; }
+.salert-preview-card .popup_template p small.time { opacity: .75; font-size: 11px; }
+.salert-preview-card .popup_template .close { position: absolute; top: 6px; right: 6px; }
+.salert-preview-card .popup_template .close button { background: none; border: none; cursor: pointer; padding: 2px; width: 18px; height: 18px; color: inherit; opacity: .7; }
+.salert-preview-card .popup_template .close svg { width: 14px; height: 14px; stroke: currentColor; }
+.salert-preview-card .popup_template.boxs { box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+.salert-preview-card .popup_template.border { border-width: 2px; border-style: solid; }
+.salert-replay { cursor: pointer; }
+.salert-replay .dashicons { color: var(--sal-muted); }
+.salert-replay:hover .dashicons { color: var(--sal-accent); }
 
-#salert-settings .popup_template {
-    background-color: #747474;
-    color: #fff;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center; 
-    background-blend-mode: overlay;
-    overflow: hidden;
+/* ===== Save bar ===== */
+.salert-savebar {
+	position: sticky; bottom: 0; z-index: 20;
+	display: flex; align-items: center; gap: 12px;
+	background: #fff; border-top: 1px solid var(--sal-border);
+	box-shadow: 0 -2px 10px rgba(0,0,0,.06);
+	border-radius: 8px 8px 0 0;
+	margin: 20px -10px -65px -2px; padding: 12px 20px;
 }
-
-#salert-settings .popup_template {
-    display: inline-block;
+.save-notice {
+	display: none; align-items: center; gap: 6px;
+	color: var(--sal-red); font-weight: 600; font-size: 13px;
 }
-
-#salert-settings .popup_template.textOnly img.pimg {
-    display: none;
-}
-
-#salert-settings .popup_template.textOnly p {
-    float: none;
-    padding-right: 41px;
-    padding-left: 59px;
-}
-
-#salert-settings .popup_template.imageOnRight img.pimg {
-    float: right;
-}
-
-
-#salert-settings .option-wrap .auto-en-wrap {
-    display: inline-block;
-}
-
-
-#salert-settings span.auto-ttl {
-    font-size: 12px;
-    font-style: italic;
-    font-family: unset;
-    color: #666;
-}
-
-/* Product Field */
-#salert-settings .products-meta-section-wrapper {
-    position: relative;
-}
-
-#salert-settings .single-section-title{
-    display: inline-block;
-    margin-top: 25px;
-}
-#salert-settings .single-product .fleft{
-    float: left;
-    margin-left: 5px;
-}
-#salert-settings .product-imagefield {
-    display: flex;
-    align-items: center;
-    margin-top: -11px;
-}
-#salert-settings .single-product.wp-dynamic .product-imagefield {
-    margin-top: 3px;
-}
-#salert-settings span.prd-image {
-    border: 1px solid #ddd;
-    padding: 3px;
-    display: inline-block;
-    border-radius: 3px;
-}
-
-#salert-settings span.prd-image img {
-    line-height: 1;
-    display: block;
-}
-
-#salert-settings .product-imagefield .sme_galimg_ctrl {
-    margin: 3px 10px 0 5px;
-    border: 2px solid #0073aa;
-    display: inline-block;
-}
-
-#salert-settings span.sme_galimg_ctrl a {
-    text-decoration: none;
-    padding: 3px 10px;
-    display: block;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-}
-
-#salert-settings .delete-table-product {
-    position: relative;
-    top: 12px;
-}
-#salert-settings .delete-product.button{
-    background: #ad2d2d;
-    color: #fff;
-    border-radius: 0;
-    border: none;
-}
-#salert-settings .delete-product.button:hover,#salert-settings .delete-product.button:focus{
-    background: #e41313;
-    color: #fff;   
-}
-#salert-settings span.add-button.table-products,#salert-settings .add-content-field {
-    display: block;
-    padding: 15px 5px;
-}
-
-#salert-settings a.docopy-table-product.button,
-#salert-settings a.copy-content-field.button{
-    background: #0085ba;
-    border-color: #0073aa #006799 #006799;
-    box-shadow: 0 1px 0 #006799;
-    color: #fff;
-    text-decoration: none;
-    text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
-}
-
-#salert-settings a.docopy-table-product.button:hover,
-#salert-settings a.copy-content-field.button:hover{
-    background: #008ec2;
-    border-color: #006799;
-    color: #fff;
-}
-
-#salert-settings .popup-item {
-    padding: 10px;
-    padding-right: 50px;
-}
-#salert-settings .popup_template.boxs {
-    overflow: hidden;
-    -webkit-box-shadow: 3px 5px 10px 1px rgba(0, 0, 0, 0.38);
-            box-shadow: 3px 5px 10px 1px rgba(0, 0, 0, 0.38);
-}
-
-#salert-settings .popup_template.border {
-    border: 2px solid #383838;
-}
-
-#salert-settings .popup_template.radius,
-#salert-settings .popup_template.b-radius {
-    border-radius: 0px !important;
-}
-
-
-#salert-settings .salert-auto-settings .notice {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-    vertical-align: middle;
-    font-style: italic;
-}
-
-#salert-settings .salert-auto textarea {
-    width: 100%;
-    height: 100px;
-}
-
-#salert-settings .single-product .product-inputfield input[type="text"] {
-    width: 100%;
-}
-
-#salert-settings .single-product h4 {
-    margin-left: 5px;
-    font-size: 1.1em;
-    margin-bottom: 0px;
-}
-
-
-
-/*Save button */
-
+.save-notice.visible { display: inline-flex; animation: salertPulse 1.2s infinite; }
+@keyframes salertPulse { 50% { opacity: .55; } }
+.save-notice .dashicons { font-size: 16px; width: 16px; height: 16px; }
+.salert-savebar-spacer { flex: 1; }
 .button.salert-btn {
-  background-color: #0099CC;
-  color: #fff;
-  padding: 6px 20px;
-  border: none;
-  box-shadow: none;
-  font-size: 14px;
-  height: auto;
-  text-transform: uppercase;
-  text-shadow: none;
-  letter-spacing: .05em;
+	display: inline-flex; align-items: center; justify-content: center; gap: 6px; line-height: 1; min-height: 34px;
+	background: var(--sal-green); border-color: var(--sal-green);
+	color: #fff; border-radius: 6px; padding: 6px 22px; font-size: 13.5px;
 }
+.button.salert-btn:hover, .button.salert-btn:focus { background: #00731c; border-color: #00731c; color: #fff; }
+.button.salert-btn.save-now { background: var(--sal-red); border-color: var(--sal-red); }
 
-.button.salert-btn:hover, .button.salert-btn:focus {
-  background-color: #1E96F1;
-  color: #fff;
-}
+/* ===== More pane promos ===== */
+.salert-more-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.salert-promo { text-align: center; padding: 32px 24px; }
+.salert-promo .dashicons { width: 44px; height: 44px; font-size: 44px; color: var(--sal-accent); }
+.salert-promo h3 { margin: 12px 0 6px; font-size: 16px; }
+.salert-promo p { color: var(--sal-muted); font-size: 13px; line-height: 1.55; margin: 0 0 16px; }
+.salert-promo-pro { border-color: var(--sal-green); background: linear-gradient(170deg, #edfaef, #fff); }
+.salert-promo-pro .dashicons { color: var(--sal-green); }
 
-.salert-save-btn-wrap {
-  margin: 10px 0px 10px;
-  display: inline-block;
-}
+/* How-to-use content restyle inside card */
+.salert-card-body .how-to-use h2,
+.salert-card-body h2 { font-size: 15px; }
+.salert-card-body table.widefat { border-radius: 6px; overflow: hidden; }
+.salert-card-body img { max-width: 100%; height: auto; }
 
-.salert-save-btn-wrap .salert-btn {
-  color: #fff;
-  padding: 10px 20px
+/* ===== Responsive ===== */
+@media (max-width: 1280px) {
+	.salert-layout { grid-template-columns: 200px minmax(0, 1fr); }
+	.salert-preview-col { grid-column: 1 / -1; order: 3; }
+	.salert-preview-sticky { position: static; }
 }
-
-.salert-save-btn-wrap .salert-btn:hover, .salert-save-btn-wrap .salert-btn:focus {
-  background-color: #006799;
-  color: #fff;
+@media (max-width: 900px) {
+	.salert-layout { grid-template-columns: 1fr; }
+	.salert-nav { position: static; flex-direction: row; flex-wrap: wrap; }
+	.salert-nav-card { display: none; }
 }
-
-.salert-save-btn-wrap .salert-btn.save-now{
-  background: #E74C3C;
+.button.salert-btn .dashicons {
+	display: inline-flex; align-items: center; justify-content: center;
+	width: 18px; height: 18px; font-size: 18px; line-height: 1; margin: 0; vertical-align: middle;
 }
-
-.salert-save-btn-wrap .salert-btn.save-now:hover{
-  background: #ff5544;
+.salert-card-body .salert-field label.salert-switch{
+	margin-bottom: 15px;
 }
-
-/* Header */
-.salert-settings-header {
-    background: #0073aad4;
-    border-bottom: 5px solid #195977;
-    color: #fff;
-    height: 65px;
-    box-shadow: 3px 5px 9px 0px #2e2f2f;
-    margin-right: 15px;
-    position: relative;
-    width: 98%
+.salert-card-body span.dashicons.dashicons-plus-alt2 {
+    display: inline-flex;
+    align-items: center;
 }
-.salert-logo {
-    float: left;
-    padding: 0 0 0 20px;
-    width: auto;
-}
-.salert-socials {
-    right: 25px;
-    margin-left: -100px;
-    position: absolute;
-    text-align: center;
-    top: 5px;
-    width: 202px;
-}
-.salert-socials p{
-    margin: 5px 0;
-}
-.salert-settings-header .salert-title {
-    color: #fff;
-    float: right;
-    font-size: 20px;
-    line-height: 65px;
-    padding: 0 20px 0 0;
-}
-
-/* Close Button */
-.popup_template .popup-item .close{
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    color: #000;
-    font-size: 22px;
-    width: 15px;
-    height: auto;
-    text-align: center;
-    cursor: pointer;
-   
-}
-.popup_template .popup-item .close img{
-    max-width: 100%;
-}
-
-/*------- Post box Fields --------*/
-#salert-settings .salert-toggle-tab-header {
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    padding: 10px 40px 10px 20px;
-    position: relative;
-    background: #ddd;
-    cursor: pointer;
-}
-
-#salert-settings .salert-toggle-tab-header:hover,
-#salert-settings .salert-toggle-tab-header.salert-toggle-active {
-    background: #2887b5;
-    color: #fff;
-}
-
-#salert-settings .salert-toggle-tab-header h4 {
-    margin: 0;
-}
-
-#salert-settings .salert-toggle-tab-header span.toggle-indicator {
-    position: absolute;
-    right: 0;
-    color: #cccccc;
-    top: 3px;
-    transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    line-height: 1;
-}
-
-#salert-settings .salert-toggle-tab-header.salert-toggle-active span.toggle-indicator {
-    transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-}
-.salert-postbox-fields + .salert-postbox-fields{
-    margin-top: 5px;
-}
-
-.salert-toggle-tab-header{
-    padding: 10px;
-}
-
-.salert-toggle-tab-header h4,
-#salert_time_meta h4{ 
-    margin: 0; 
-    position: relative; 
-}
-
-.salert-postbox-fields.salert-toggle-tab-body{
-    padding: 1px 10px;
-}
-
-#salert_time_meta .form-table td{
-    padding: 5px 10px;
-}
-/*Premium */
-.premium{
-    color: red;
-}
-
-.salert-logo h2 {
-    color: #fff;
-    font-size: 30px;
-    display: inline-block;
-}
-.salert-logo span {
-    display: inline-block;
-    font-size: 12px;
-    color: #f7d6ff;
-}
-.salert-logo h2 span {
-    font-size: 40px;
-    color: #a1f1f9;
-}
-
-#salert-settings .salert-settings-tab ul li.active {
-    background-color: #525252;
-    color: #d4f1ff;
-}
-#salert-settings .salert-settings-tab ul{
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-li.tab.general:after {
-    content: "\f111";
-}
-li.tab.display:after {
-    content: "\f128";
-}
-li.tab.howtouse:after {
-    content: "\f223";
-}
-li.tab.others:after {
-    content: "\f480";
-}
-li.tab.pro-upgrade:after{
-    content: "\f529";
-}
-
-li.tab:after {
-    top: 5px;
-    position: absolute;
-    font-family: dashicons;
-    left: 0;
-    right: 0;
-    font-size: 26px;
-    margin-top: 4px;
-}
-.save-notice{
-    margin: 0;
-    border-bottom: 1px solid #E7E7E7;
-    background-color: #FCF8E3;
-    color: #C09853;
-    padding: 8px 35px 8px 14px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-    font-size: 14px;
-    font-weight: 500;
-    text-align: center;
-}
-/* Image Style */
-#salert-settings .popup_position .circle img{
-    width: 80px;
-    border-radius: 50%;
-}
-
-
-.sale_alert_wrapper .close-btn {
-  position: absolute;
-  top: -14px;
-  right: -4px;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border-radius: 50%;
-  background: #0c0e1f;
-  border: none;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  color: #94a3b8;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  opacity: 0;
-  transform: scale(0);
-}
-
-.sale_alert_wrapper .popup_box:hover .close-btn {
-  background: #f8fafc;
-  color: #64748b;
-  opacity: 1;
-  transform: scale(1);
-}
-
-.sale_alert_wrapper .close-btn svg {
-  width: 14px;
-  height: 14px;
-}
+/* ===== Free vs Pro ===== */
+.salert-compare { width: 100%; border-collapse: collapse; }
+.salert-compare th, .salert-compare td { padding: 12px 14px; text-align: center; border-bottom: 1px solid var(--sal-border); font-size: 13.5px; }
+.salert-compare th:first-child, .salert-compare td:first-child { text-align: left; }
+.salert-compare thead th { font-weight: 600; background: #f6f7f7; }
+.salert-compare .salert-compare-pro { background: #edfaef; font-weight: 600; }
+.salert-compare thead .salert-compare-pro { color: var(--sal-green); }
+.salert-compare .dashicons { vertical-align: middle; }
+.salert-compare .salert-yes { color: var(--sal-green); }
+.salert-compare .salert-no { color: #b32d2e; opacity: .6; }
+.salert-compare-cta { text-align: center; margin: 20px 0 0; }
+.salert-btn-lg { padding: 12px 28px; font-size: 14.5px; display: inline-flex; align-items: center; gap: 6px; }
+.salert-card-head .salert-btn-primary { text-decoration: none; padding: 7px 14px; border-radius: 6px; font-size: 13px; }

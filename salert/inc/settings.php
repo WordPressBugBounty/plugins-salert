@@ -1,6 +1,7 @@
 <?php
 /**
- * Admin Settings Page
+ * Admin Settings Page - Modern UI (2026 redesign)
+ * Field names & AJAX contract kept identical to v1.3.1 for backward compatibility.
  */
 
 if( ! defined( 'ABSPATH' ) ) exit(); // Exit if accessed directly
@@ -11,7 +12,7 @@ class Salert_Admin_Settings {
 	 * @var array
 	 * @since 1.0.0
 	 */
-	public $salert_default_keys = [ 
+	public $salert_default_keys = [
 								'popup-enable' => 0,
 								'popup-start-time' => 5,
 								'popup-stay-time' => 10,
@@ -23,7 +24,7 @@ class Salert_Admin_Settings {
 								'image-style' => 'square',
 								'bg-color' => '#fff',
 								'container-width' => 350,
-                                'inner-padding' => 10,
+								'inner-padding' => 10,
 								'border-enable' => 1,
 								'border-color' => '#e0e0e0',
 								'border-width' => 2,
@@ -39,631 +40,534 @@ class Salert_Admin_Settings {
 								'product-count' => 0,
 								'popup-contents' => '[name] from [country] has just purchased [product]<br>
 [time]',
-                                'close-btn' => 1,
-                                'enable-resp' => 1,
-                                'box-shadow'	=> 1,
-                                'text-separator' => ','
-	                          ];
+								'close-btn' => 1,
+								'enable-resp' => 1,
+								'box-shadow' => 1,
+								'text-separator' => ','
+							];
 
-	/**
-	 * Will Contain All Components Default Values
-	 * @var array
-	 * @since 1.0.0
-	 */
 	private $salert_default_settings;
-
-	/**
-	 * Will Contain User End Settings Value
-	 * @var array
-	 * @since 1.0.0
-	 */
 	private $salert_settings;
-
-	/**
-	 * Will Contains Settings Values Fetched From DB
-	 * @var array
-	 * @since 1.0.0
-	 */
 	private $salert_get_settings;
 
-	/**
-	 * Initializing all default hooks and functions
-	 * @param
-	 * @return void
-	 * @since 1.1.2
-	 */
 	function __construct(){
-        add_action( 'admin_menu', array( $this, 'create_salert_admin_menu' ) );
-	    add_action( 'wp_ajax_salert_save_settings_with_ajax', array( $this, 'salert_save_settings_with_ajax' ) );
-    }
+		add_action( 'admin_menu', array( $this, 'create_salert_admin_menu' ) );
+		add_action( 'wp_ajax_salert_save_settings_with_ajax', array( $this, 'salert_save_settings_with_ajax' ) );
+	}
 
-	/**
-	 * Create an admin menu.
-	 * @param
-	 * @return void
-	 * @since 1.0.0
-	 */
 	public function create_salert_admin_menu() {
-
 		add_menu_page(
 			esc_html__('Salert','salert'),
 			esc_html__('Salert','salert'),
 			'manage_options',
 			'salert-settings',
 			array( $this, 'salert_admin_settings_page' ),
-			plugins_url( '/', __FILE__ ).'images/alert.png',
+			'dashicons-megaphone',
 			30
 		);
-
 	}
 
- 	public function salert_admin_settings_page(  ) {
-	   /**
-	    * This section will handle the "salert_save_settings" array. If any new settings options is added
-	    * then it will matches with the older array and then if it founds anything new then it will update the entire array.
-	    */
-       $this->salert_default_settings = $this->salert_default_keys;
-	   $this->salert_get_settings = get_option( 'salert_save_settings', $this->salert_default_settings );
-	   $salert_new_settings = array_diff_key( $this->salert_default_settings, $this->salert_get_settings );
-
-	   if(empty($this->salert_get_settings)){
-	   	update_option( 'salert_save_settings', $this->salert_default_settings );
-	   }
-	   if( ! empty( $salert_new_settings ) ) {
-	   	$salert_updated_settings = array_merge( $this->salert_get_settings, $salert_new_settings );
-	   	update_option( 'salert_save_settings', $salert_updated_settings );
-	   }
-	   $this->salert_get_settings = get_option( 'salert_save_settings', $this->salert_default_settings );
-	   //print_r($this->salert_get_settings);
+	/**
+	 * Render a toggle switch row.
+	 */
+	private function render_toggle( $name, $label, $desc = '', $disabled = false, $premium = false ) {
+		$value   = isset( $this->salert_get_settings[ $name ] ) ? $this->salert_get_settings[ $name ] : 0;
+		$classes = 'salert-switch';
+		if ( $premium ) { $classes .= ' is-premium'; }
 		?>
-        <div class="salert-settings-header">
-            <div class="salert-logo">
-				<h2><span>S</span>alert</h2>
-				<span><?php echo esc_html__('Version: ','salert').SALERT_VERSION; ?></span>
-                
-            </div>
-            <div class="salert-socials">
-                <p><?php _e('Follow us for new updates', 'salert') ?></p>
-                <div class="salert-social-bttns">
-                    <iframe src="//www.facebook.com/plugins/like.php?href=https://www.facebook.com/WPoperation/&amp;width&amp;layout=button&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=35&amp;appId=1411139805828592" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:20px; width:50px " allowTransparency="true"></iframe>
-                    &nbsp;&nbsp;
-                    <a href="https://twitter.com/wpoperation" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow</a>
-                    <script>
-                        !function (d, s, id) {
-                            var js, fjs = d.getElementsByTagName(s)[0];
-                            if (!d.getElementById(id)) {
-                                js = d.createElement(s);
-                                js.id = id;
-                                js.src = "//platform.twitter.com/widgets.js";
-                                fjs.parentNode.insertBefore(js, fjs);
-                            }
-                        }(document, "script", "twitter-wjs");
-                    </script>
-                </div>
-            </div>
-           
-        </div>
-        <div class="settings-wrap" id="salert-settings">
-	    <div class="salert-settings-tab clearfix">
-	    	<ul class="tab-wrap clearfix">
-	    		<li class="tab active general" data-id="general">
-	    			<?php echo esc_html__('General Settings','salert'); ?>
-	    		</li>
-	    		<li class="tab display" data-id="display">
-	    		    <?php echo esc_html__('Display Settings','salert'); ?>
-	    		</li>
-	    		<li class="tab howtouse" data-id="howtouse">
-	    		    <?php echo esc_html__('How To Use','salert'); ?>
-	    		</li>
-	    		<li class="tab others" data-id="others">
-	    		    <?php echo esc_html__('Other Products','salert'); ?>
-	    		</li>
-	    		<li class="tab pro-upgrade" data-id="premium-tab" style="background:green; color: #fff;">
-	    		    <?php echo esc_html__('Upgrade To Pro','salert'); ?>
-	    		</li>
-	    	</ul>
-	    </div>
-	    <div class="save-notice" style="display: none;"><?php esc_html_e('Settings have changed, you should save them!','salert'); ?></div>
- 		<div class="salert-element-settings-wrap clearfix">
-			<form action='' method='post' id="salert-settings-form" name="salert-settings">
-				<div class="salert-main-settings tab-pane general clearfix" >
+		<div class="salert-field <?php echo $premium ? 'salert-field-premium' : ''; ?>">
+			<div class="salert-field-label">
+				<span class="salert-field-title"><?php echo esc_html( $label ); ?></span>
+				<?php if ( $desc ) : ?><span class="salert-field-desc"><?php echo esc_html( $desc ); ?></span><?php endif; ?>
+			</div>
+			<label class="<?php echo esc_attr( $classes ); ?>">
+				<input type="checkbox" name="<?php echo esc_attr( $name ); ?>" value="1" <?php checked( $value, '1', true ); ?> <?php disabled( $disabled ); ?>>
+				<span class="salert-switch-track"><span class="salert-switch-thumb"></span></span>
+			</label>
+			<?php if ( $premium ) : ?><span class="salert-pro-badge"><?php esc_html_e( 'PRO', 'salert' ); ?></span><?php endif; ?>
+		</div>
+		<?php
+	}
 
-				    <div class="general-settings-section">
-				    	<ul class="general-tab-wrap clearfix">
-				    		<li class="tab active" data-id="salert-popup-settings">
-				    			<?php echo esc_html__('Popup Settings','salert'); ?>
-				    		</li>
-				    		<li class="tab" data-id="salert-design-settings">
-				    		    <?php echo esc_html__('Design Settings','salert'); ?>
-				    		</li>
-				    		<li class="tab" data-id="salert-typo-settings">
-				    		    <?php echo esc_html__('Typo Settings','salert'); ?>
-				    		</li>
-				    		<li class="tab" data-id="salert-excludepage-settings">
-				    		    <?php echo esc_html__('Exclude Pages','salert'); ?>
-				    		</li>
-				    		<li class="tab" data-id="salert-includepage-settings">
-				    		    <?php echo esc_html__('Include Pages','salert'); ?>
-				    		</li>
-				    	</ul>
-					    <?php 
-					    /*=========================
-					    * Popup Settings
-					    * =========================*/
-					    ?>
-					    <div class="salert-popup-settings general-tab-pane clearfix">
-						    <div class="main-title"><?php echo esc_html__('Popup Settings','salert'); ?></div>
-						    <div class="main-content">
-						 		<fieldset class="salert-input">
-						 			<?php $popup_enable = isset($this->salert_get_settings['popup-enable']) ? $this->salert_get_settings['popup-enable'] : 0; ?>
-	                                <label class="title"><?php esc_html_e('Popup Enable','sale-alert');?></label>
-	                            	<input class="popup-enable" type="checkbox" name="popup-enable" value="1" <?php checked( $popup_enable, '1', true ); ?> >
-	                            </fieldset>
+	public function salert_admin_settings_page() {
+		$this->salert_default_settings = $this->salert_default_keys;
+		$this->salert_get_settings = get_option( 'salert_save_settings', $this->salert_default_settings );
+		$salert_new_settings = array_diff_key( $this->salert_default_settings, $this->salert_get_settings );
 
-								<fieldset class="salert-input">
-									<label class="title"><?php echo esc_html__( 'Popup Start Time', 'salert' ); ?></label>
-									<input type="number" name="popup-start-time" value="<?php echo $this->salert_get_settings['popup-start-time'];?>">sec
-						    	</fieldset>
+		if(empty($this->salert_get_settings)){
+			update_option( 'salert_save_settings', $this->salert_default_settings );
+		}
+		if( ! empty( $salert_new_settings ) ) {
+			$salert_updated_settings = array_merge( $this->salert_get_settings, $salert_new_settings );
+			update_option( 'salert_save_settings', $salert_updated_settings );
+		}
+		$this->salert_get_settings = get_option( 'salert_save_settings', $this->salert_default_settings );
+		$s = $this->salert_get_settings;
 
-								<fieldset class="salert-input">
-									<label class="title"><?php echo esc_html__( 'Popup Stay Time', 'salert' ); ?></label>
-									<input type="number" name="popup-stay-time" value="<?php echo $this->salert_get_settings['popup-stay-time'];?>">sec
-						    	</fieldset>
+		$animations = array(
+			'fadeInLeft' => 'Fade In Left', 'fadeInUp' => 'Fade In Up', 'fadeInRight' => 'Fade In Right',
+			'bounceInRight' => 'Bounce In Right', 'bounceInLeft' => 'Bounce In Left', 'bounceInUp' => 'Bounce In Up',
+			'zoomIn' => 'Zoom In', 'zoomInDown' => 'Zoom In Down', 'zoomInLeft' => 'Zoom In Left',
+			'zoomInRight' => 'Zoom In Right', 'zoomInUp' => 'Zoom In Up',
+			'jackInTheBox' => 'Jack In The Box', 'rollIn' => 'Roll In', 'lightSpeedIn' => 'Light Speed In',
+		);
+		?>
+		<div class="wrap salert-wrap">
 
-								<fieldset class="salert-input">
-									<label class="title"><?php echo esc_html__( 'Popup Time Interval', 'salert' ); ?></label>
-									<input type="number" name="popup-time-interval-from" value="<?php echo $this->salert_get_settings['popup-time-interval-from'];?>">to
-									<input type="number" name="popup-time-interval-to" value="<?php echo $this->salert_get_settings['popup-time-interval-to'];?>">
-						    	</fieldset>
+			<!-- ===== App Header ===== -->
+			<div class="salert-header">
+				<div class="salert-header-brand">
+					<div class="salert-header-logo">S</div>
+					<div>
+						<h1>Salert</h1>
+						<p><?php esc_html_e( 'Sales notification popups for WooCommerce & beyond', 'salert' ); ?></p>
+					</div>
+				</div>
+				<div class="salert-header-actions">
+					<span class="salert-version-pill">v<?php echo esc_html( SALERT_VERSION ); ?></span>
+					<a href="https://wordpress.org/support/plugin/salert/reviews/#new-post" target="_blank" rel="noopener" class="salert-btn-secondary">
+						<span class="dashicons dashicons-star-filled"></span> <?php esc_html_e( 'Rate Us', 'salert' ); ?>
+					</a>
+					<a href="https://wpoperation.com/plugins/sale-alert/" target="_blank" rel="noopener" class="salert-btn-primary">
+						<span class="dashicons dashicons-awards"></span> <?php esc_html_e( 'Upgrade to Pro', 'salert' ); ?>
+					</a>
+				</div>
+			</div>
 
-						    	<fieldset class="salert-input">
-						            <label><?php esc_html_e('Popup Position','salert');?></label>
-							 		<select id="template_position" name='popup-position'>
-							 			<option value='bottomLeft' <?php selected( $this->salert_get_settings['popup-position'], 'bottomLeft', true ); ?>><?php esc_html_e('Bottom Left','salert'); ?></option>
-							 			<option value='bottomRight' <?php selected( $this->salert_get_settings['popup-position'], 'bottomRight', true ); ?>><?php esc_html_e('Bottom Right','salert'); ?></option>
-							 			<option value='topLeft' <?php selected( $this->salert_get_settings['popup-position'], 'topLeft', true ); ?>><?php esc_html_e('Top Left','salert'); ?></option>
-							 			<option value='topRight' <?php selected( $this->salert_get_settings['popup-position'], 'topRight', true ); ?>><?php esc_html_e('Top Right','salert'); ?></option>
-							 		</select>
-						 		</fieldset>
+			<form action="" method="post" id="salert-settings-form" name="salert-settings">
 
-						 		<fieldset class="salert-input"> 
-						            <label><?php esc_html_e('Animation Style','salert');?></label>
-							 		<select id="transition_style" name='popup-animation'>
-							 		    <?php $popup_animation = $this->salert_get_settings['popup-animation'];?>
-							 			<option value='fadeInLeft' <?php selected($popup_animation, 'fadeInLeft', true ); ?>><?php esc_html_e('fadeInLeft','salert'); ?></option>
-							 			<option value='fadeInUp' <?php selected($popup_animation, 'fadeInUp', true ); ?>><?php esc_html_e('fadeInUp','salert'); ?></option>
-							 			<option value='fadeInRight' <?php selected($popup_animation, 'fadeInRight', true ); ?>><?php esc_html_e('fadeInRight','salert'); ?></option>
-							 			<option value='bounceInRight' <?php selected($popup_animation, 'bounceInRight', true ); ?>><?php esc_html_e('bounceInRight','salert'); ?></option>
-							 			<option value='bounceInLeft' <?php selected($popup_animation, 'bounceInLeft', true ); ?>><?php esc_html_e('bounceInLeft','salert'); ?></option>
-							 			<option value='bounceInUp' <?php selected($popup_animation, 'bounceInUp', true ); ?>><?php esc_html_e('bounceInUp','salert'); ?></option> 			
-                                        <option value="zoomIn" <?php selected($popup_animation, 'zoomIn', true ); ?>><?php esc_html_e('zoomIn','salert'); ?></option></option>
-                                        <option value="zoomInDown" <?php selected($popup_animation, 'zoomInDown', true ); ?>  >zoomInDown</option>
-                                        <option value="zoomInLeft"  <?php selected($popup_animation, 'zoomInLeft', true ); ?> >zoomInLeft</option>
-                                        <option value="zoomInRight" <?php selected($popup_animation, 'zoomInRight', true ); ?> >zoomInRight</option>
-                                        <option value="zoomInUp"  <?php selected($popup_animation, 'zoomInUp', true ); ?>  >zoomInUp</option>
-                                        <option value="jackInTheBox" <?php selected($popup_animation, 'jackInTheBox', true ); ?>  >jackInTheBox</option>
-                                        <option value="rollIn" <?php selected($popup_animation, 'rollIn', true ); ?> >rollIn</option>
-                                        <option value="lightSpeedIn" <?php selected($popup_animation, 'lightSpeedIn', true ); ?> >lightSpeedIn</option>
-							 		</select> 
-	                            </fieldset>
+			<!-- ===== Layout: Sidebar Nav + Content + Preview ===== -->
+			<div class="salert-layout">
 
-	                            <fieldset class="salert-input"> 
-						            <label><?php esc_html_e('Image Position','salert');?></label>
-							 		<select id="template_layout" name='image-position'>
-							 		    <?php $popup_imgposition = $this->salert_get_settings['image-position'];?>
-							 			<option value='imageOnLeft' <?php selected($popup_imgposition, 'imageOnLeft',true ); ?>><?php esc_html_e('Image on left','salert'); ?></option>
-							 			<option value='imageOnRight' <?php selected($popup_imgposition, 'imageOnRight', true ); ?>><?php esc_html_e('Image on right','salert'); ?></option>
-							 			<option value='textOnly' <?php selected($popup_imgposition, 'textOnly', true ); ?>><?php esc_html_e('Text only','salert'); ?></option>
-							 		</select>
-						 		</fieldset> 
+				<!-- Sidebar -->
+				<nav class="salert-nav" aria-label="<?php esc_attr_e( 'Salert sections', 'salert' ); ?>">
+					<button type="button" class="salert-nav-item active" data-pane="pane-general">
+						<span class="dashicons dashicons-admin-generic"></span>
+						<?php esc_html_e( 'General', 'salert' ); ?>
+					</button>
+					<button type="button" class="salert-nav-item" data-pane="pane-content">
+						<span class="dashicons dashicons-editor-ul"></span>
+						<?php esc_html_e( 'Popup Content', 'salert' ); ?>
+					</button>
+					<button type="button" class="salert-nav-item" data-pane="pane-help">
+						<span class="dashicons dashicons-editor-help"></span>
+						<?php esc_html_e( 'How To Use', 'salert' ); ?>
+					</button>
+					<button type="button" class="salert-nav-item" data-pane="pane-compare">
+						<span class="dashicons dashicons-star-filled"></span>
+						<?php esc_html_e( 'Free vs Pro', 'salert' ); ?>
+					</button>
+					<button type="button" class="salert-nav-item" data-pane="pane-more">
+						<span class="dashicons dashicons-grid-view"></span>
+						<?php esc_html_e( 'More From Us', 'salert' ); ?>
+					</button>
 
-	                            <fieldset class="salert-input"> 
-						            <label><?php esc_html_e('Image Style','salert');?></label>
-							 		<select id="image_style" name='image-style'>
-							 		    <?php $popup_imgstyle = isset($this->salert_get_settings['image-style']) ? $this->salert_get_settings['image-style']: 'square';?>
-							 			<option value='square' <?php selected($popup_imgstyle, 'square',true ); ?>><?php esc_html_e('Square','salert'); ?></option>
-							 			<option value='circle' <?php selected($popup_imgstyle, 'circle', true ); ?>><?php esc_html_e('Circle','salert'); ?></option>
-							 		</select>
-						 		</fieldset>
+					<div class="salert-nav-card">
+						<h4><?php esc_html_e( 'Love Salert?', 'salert' ); ?></h4>
+						<p><?php esc_html_e( 'A 5-star rating helps other store owners find us.', 'salert' ); ?></p>
+						<a href="https://wordpress.org/support/plugin/salert/reviews/#new-post" target="_blank" rel="noopener" class="salert-btn-secondary salert-btn-block">
+							<?php esc_html_e( 'Leave a Review', 'salert' ); ?>
+						</a>
+					</div>
+				</nav>
 
-						 		<fieldset class="sale_alert-input">
-	                                <label><?php esc_html_e('Enable Sound?','sale-alert');?></label>
-	                            	<input class="sound-enable" type="checkbox" name="" value="1" disabled>
-	                            	<pre class="premium"><?php esc_html_e('Premium Feature','salert'); ?></pre>
-	                            </fieldset>
-						    </div>	
-				    	</div>
-					    <?php 
-					    /*=========================
-					    * Design Settings
-					    * =========================*/
-					    ?>
-					    <div class="salert-design-settings general-tab-pane clearfix" style="display:none">
-					    	<div class="main-title"><?php echo esc_html__('Design Settings','salert');?></div>
-					    	<div class="main-content">
-						 		<fieldset class="salert-input">
-						            <label><?php esc_html_e('Background Color','salert');?></label>
-							 		<input type="text" class="color-picker" id="popup_bgcolor" name="bg-color" value='<?php echo $this->salert_get_settings['bg-color']; ?>'>
-	                            </fieldset>
+				<!-- Main panes -->
+				<div class="salert-main">
 
-					 		    <fieldset class="salert-input bg-img">
-						            <label><?php esc_html_e('Background Image','salert');?></label>
-			                        <div class="product-imagefield fleft clearfix">
-					                    <input type="text" name="" placeholder="http://path/to/image.png" value="" disabled="disabled">
-			                        </div><br>
-			                        <pre class="premium">Premium Feature</pre>
-	                            </fieldset>
+					<!-- ============ GENERAL PANE ============ -->
+					<section class="salert-pane active" id="pane-general">
 
-	                            <fieldset class="salert-input">
-	                                <label><?php esc_html_e('Add Close Button','salert');?></label>
-	                            	<input class="close-btn" type="checkbox" name="close-btn" value="1" <?php checked( $this->salert_get_settings['close-btn'], '1', true ); ?>>
-	                            </fieldset>
+						<div class="salert-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-controls-play"></span> <?php esc_html_e( 'Popup Behavior', 'salert' ); ?></h2>
+							</header>
+							<div class="salert-card-body">
+								<?php $this->render_toggle( 'popup-enable', __( 'Enable Popup', 'salert' ), __( 'Master switch — show sales notifications on your site.', 'salert' ) ); ?>
 
-						 		<fieldset class="salert-input">
-						            <label><?php esc_html_e('Popup Container Width','salert');?></label>
-							 		<input type='number' min="0" id="salert-cont-width"  name='container-width' value='<?php echo $this->salert_get_settings['container-width']; ?>'><?php esc_html_e('px','salert'); ?>
-	                            </fieldset>
-                                
-						 		<fieldset class="salert-input">
-						            <label><?php esc_html_e('Inner Padding','salert');?></label>
-							 		<input type='number' min="0" id="salert-inner-pad"  name='inner-padding' value='<?php echo $this->salert_get_settings['inner-padding']; ?>'><?php esc_html_e('px','salert'); ?>
-	                            </fieldset>
-	                            <fieldset class="salert-input">
-	                            	<?php 
-                                       $box_shadow = isset($this->salert_get_settings['box-shadow']) ? $this->salert_get_settings['box-shadow'] : '';
-	                            	?>
-	                                <label><?php esc_html_e('Check to Enable Box Shadow','salert');?></label>
-	                            	<input class="chk-boxs" type="checkbox" name="box-shadow" value="1" <?php checked( $box_shadow, '1', true ); ?>>
-	                            </fieldset>
-	                            <fieldset class="salert-input">
-	                                <label><?php esc_html_e('Check to Enable Border','salert');?></label>
-	                            	<input class="chk-border" type="checkbox" name="border-enable" value="1" <?php checked( $this->salert_get_settings['border-enable'], '1', true ); ?>>
-	                            </fieldset>
-					 	        <fieldset class="salert-border-options salert-input">
-						 	        <label><?php esc_html_e('Border Color','salert');?></label>
-					 		        <input type="text" class="color-picker" id="popup_bordercolor" name="border-color" value='<?php echo $this->salert_get_settings['border-color']; ?>'><br>
-						 		    <label><?php esc_html_e('Border Radius','salert');?></label>
-						 		    <input type='number' min="0" class="salert-border" id="salert-border-radius" name='border-radius' value='<?php echo $this->salert_get_settings['border-radius']; ?>'><?php echo esc_attr__('px','salert');?>
-				                     <br>
-						 		    <label><?php esc_html_e('Border Width','salert');?></label>
-						 		    <input type='number' min="0" id="salert-border-width" name='border-width' value='<?php echo $this->salert_get_settings['border-width']; ?>'><?php echo esc_attr__('px','salert');?>		
-				 		        </fieldset>
-                                
-	                            <fieldset class="salert-input">
-	                                <label><?php esc_html_e('Show on Responsive','salert');?></label>
-	                            	<input class="chk-resp" type="checkbox" name="enable-resp" value="1" <?php checked( $this->salert_get_settings['enable-resp'], '1', true ); ?>>
-	                            </fieldset>
-                                
-					    	</div>
-					    </div>
-					    <?php 
-					    /*=========================
-					    * Typography Settings
-					    * =========================*/
-					    ?>
-					    <div class="salert-typo-settings general-tab-pane clearfix" style="display:none">
-					    	<div class="main-title"><?php esc_html_e('Typography Settings','salert');?></div>
-					    	<div class="main-content">
-						 		<fieldset class="salert-input">
-						            <label><?php esc_html_e('Text Color','salert');?></label>
-							 		<input type="text" class="color-picker" id="popup_textcolor" name="text-color" value='<?php echo $this->salert_get_settings['text-color']; ?>'>
-	                            </fieldset>
-
-				 	            <fieldset class="salert-input">
-						 		    <label><?php esc_html_e('Font Size','salert');?></label>
-						 			<input type='number' min="0" id="popup_font_size" name='font-size' value='<?php echo $this->salert_get_settings['font-size']; ?>'><?php echo esc_attr__('px','salert');?>			    
-					            </fieldset>
-
-					            <fieldset class="salert-input">
-						            <label><?php esc_html_e('Text Transform','salert');?></label>
-							 		<select id="popup_text_tnsfrm" name='text-transform'>
-							 		    <option value='none' <?php selected($this->salert_get_settings['text-transform'], 'none',true ); ?>><?php esc_html_e('Default','salert'); ?></option>
-							 			<option value='uppercase' <?php selected($this->salert_get_settings['text-transform'], 'uppercase',true ); ?>><?php esc_html_e('Uppercase','salert'); ?></option>
-							 			<option value='lowercase' <?php selected($this->salert_get_settings['text-transform'], 'lowercase', true ); ?>><?php esc_html_e('Lowercase','salert'); ?></option>
-							 			<option value='capitalize' <?php selected($this->salert_get_settings['text-transform'], 'capitalize', true ); ?>><?php esc_html_e('Capitalize','salert'); ?></option>
-							 		</select>
-						 		</fieldset>
-	                        </div>
-	                    </div>   
-					    <?php 
-					    /*=========================
-					    * Exclude Pages
-					    * =========================*/
-					    ?>
-					    <div class="salert-excludepage-settings general-tab-pane clearfix" style="display:none">
-					    	<div class="main-title"><?php esc_html_e('Exclude Pages','salert');?></div>
-					    	<div class="main-content">
-						        <pre class="premium">Premium Feature</pre>
-						        <fieldset class="salert-input">
-								<div class="salert-postbox-fields">
-									<div class="salert-toggle-tab-header salert-toggle-active"><h4><?php _e('Default WordPress Pages','salert');?><span class="toggle-indicator fa fa-chevron-circle-down" aria-hidden="true"></span></h4></div>
-									<div class="salert-postbox-fields salert-toggle-tab-body">
-										<p><input type="checkbox" name="checkfield[]" id="salert_front_pages" value="front_page" disabled><label for="salert_front_pages"><?php _e('Front Page','salert');?></label></p>
-										<p><input type="checkbox" name="checkfield[]" id="salert_archive_pages" value="archive_page" disabled/><label for="salert_archive_pages"><?php _e('Archive Page','salert');?></label></p>
-										<p><input type="checkbox" name="checkfield[]"  id="salert_404_pages" value="404_page" disabled/><label for="salert_404_pages"><?php _e('404 Page','salert');?></label></p>
-										<p><input type="checkbox" name="checkfield[]"  id="salert_search_pages" value="search_page" disabled/><label for="salert_search_pages"><?php _e('Search Page','salert');?></label></p>
-										<p><input type="checkbox" name="checkfield[]" id="salert_single_pages" value="single_page" disabled/><label for="salert_single_pages"><?php _e('All Single Post/Page','salert');?></label></p>
+								<div class="salert-field-grid">
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-start-time"><?php esc_html_e( 'First popup after (seconds)', 'salert' ); ?></label>
+										<input type="number" min="0" id="popup-start-time" name="popup-start-time" value="<?php echo esc_attr( $s['popup-start-time'] ); ?>">
 									</div>
-								</div>        
-						        <?php
-								$post_types = get_post_types(array('public'=>'true'));
-								sort($post_types);
-								foreach($post_types as $post_type){
-									if(!($post_type == 'attachment')){
-										$loop = get_posts( array( 'post_type' => $post_type, 'posts_per_page' => -1, 'post_status'=>'publish' ) );
-										if(!empty($loop)):
-											?>
-											<div class="salert-postbox-fields salert-hide-singular" >
-												<div class="salert-toggle-tab-header">
-													<h4>
-														<?php esc_html_e('Specific ','salert'); _e(ucwords($post_type));?>
-														<span class="toggle-indicator fa fa-chevron-circle-down" aria-hidden="true">
-														</span>
-													</h4>
-												</div>
-												<div class="salert-postbox-fields salert-toggle-tab-body" style="display:none;">
-													<?php
-													foreach($loop as $postloop): 
-														$post_id = $postloop->ID;
-													    $title = get_the_title( $post_id );
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-stay-time"><?php esc_html_e( 'Stay visible (seconds)', 'salert' ); ?></label>
+										<input type="number" min="0" id="popup-stay-time" name="popup-stay-time" value="<?php echo esc_attr( $s['popup-stay-time'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-time-interval-from"><?php esc_html_e( 'Interval between popups', 'salert' ); ?></label>
+										<span class="salert-inline-range">
+											<input type="number" min="0" id="popup-time-interval-from" name="popup-time-interval-from" value="<?php echo esc_attr( $s['popup-time-interval-from'] ); ?>">
+											<em><?php esc_html_e( 'to', 'salert' ); ?></em>
+											<input type="number" min="0" id="popup-time-interval-to" name="popup-time-interval-to" value="<?php echo esc_attr( $s['popup-time-interval-to'] ); ?>">
+											<em><?php esc_html_e( 'sec', 'salert' ); ?></em>
+										</span>
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-position"><?php esc_html_e( 'Screen position', 'salert' ); ?></label>
+										<select id="popup-position" name="popup-position">
+											<option value="bottomLeft" <?php selected( $s['popup-position'], 'bottomLeft' ); ?>><?php esc_html_e( 'Bottom Left', 'salert' ); ?></option>
+											<option value="bottomRight" <?php selected( $s['popup-position'], 'bottomRight' ); ?>><?php esc_html_e( 'Bottom Right', 'salert' ); ?></option>
+											<option value="topLeft" <?php selected( $s['popup-position'], 'topLeft' ); ?>><?php esc_html_e( 'Top Left', 'salert' ); ?></option>
+											<option value="topRight" <?php selected( $s['popup-position'], 'topRight' ); ?>><?php esc_html_e( 'Top Right', 'salert' ); ?></option>
+										</select>
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-animation"><?php esc_html_e( 'Entry animation', 'salert' ); ?></label>
+										<select id="popup-animation" name="popup-animation">
+											<?php foreach ( $animations as $anim_key => $anim_label ) : ?>
+												<option value="<?php echo esc_attr( $anim_key ); ?>" <?php selected( $s['popup-animation'], $anim_key ); ?>><?php echo esc_html( $anim_label ); ?></option>
+											<?php endforeach; ?>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="salert-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-art"></span> <?php esc_html_e( 'Design', 'salert' ); ?></h2>
+							</header>
+							<div class="salert-card-body">
+								<div class="salert-field-grid salert-grid-3">
+									<div class="salert-field">
+										<label class="salert-field-title" for="bg-color"><?php esc_html_e( 'Background color', 'salert' ); ?></label>
+										<input type="text" class="color-picker" id="bg-color" name="bg-color" value="<?php echo esc_attr( $s['bg-color'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="text-color"><?php esc_html_e( 'Text color', 'salert' ); ?></label>
+										<input type="text" class="color-picker" id="text-color" name="text-color" value="<?php echo esc_attr( $s['text-color'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="font-size"><?php esc_html_e( 'Font size (px)', 'salert' ); ?></label>
+										<input type="number" min="0" id="font-size" name="font-size" value="<?php echo esc_attr( $s['font-size'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="container-width"><?php esc_html_e( 'Popup width (px)', 'salert' ); ?></label>
+										<input type="number" min="0" id="container-width" name="container-width" value="<?php echo esc_attr( $s['container-width'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="inner-padding"><?php esc_html_e( 'Inner padding (px)', 'salert' ); ?></label>
+										<input type="number" min="0" id="inner-padding" name="inner-padding" value="<?php echo esc_attr( $s['inner-padding'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="text-transform"><?php esc_html_e( 'Text transform', 'salert' ); ?></label>
+										<select id="text-transform" name="text-transform">
+											<option value="none" <?php selected( $s['text-transform'], 'none' ); ?>><?php esc_html_e( 'Default', 'salert' ); ?></option>
+											<option value="uppercase" <?php selected( $s['text-transform'], 'uppercase' ); ?>><?php esc_html_e( 'Uppercase', 'salert' ); ?></option>
+											<option value="lowercase" <?php selected( $s['text-transform'], 'lowercase' ); ?>><?php esc_html_e( 'Lowercase', 'salert' ); ?></option>
+											<option value="capitalize" <?php selected( $s['text-transform'], 'capitalize' ); ?>><?php esc_html_e( 'Capitalize', 'salert' ); ?></option>
+										</select>
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="image-position"><?php esc_html_e( 'Image position', 'salert' ); ?></label>
+										<select id="image-position" name="image-position">
+											<option value="imageOnLeft" <?php selected( $s['image-position'], 'imageOnLeft' ); ?>><?php esc_html_e( 'Image on left', 'salert' ); ?></option>
+											<option value="imageOnRight" <?php selected( $s['image-position'], 'imageOnRight' ); ?>><?php esc_html_e( 'Image on right', 'salert' ); ?></option>
+											<option value="textOnly" <?php selected( $s['image-position'], 'textOnly' ); ?>><?php esc_html_e( 'Text only', 'salert' ); ?></option>
+										</select>
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="image-style"><?php esc_html_e( 'Image style', 'salert' ); ?></label>
+										<select id="image-style" name="image-style">
+											<option value="square" <?php selected( $s['image-style'], 'square' ); ?>><?php esc_html_e( 'Square', 'salert' ); ?></option>
+											<option value="circle" <?php selected( $s['image-style'], 'circle' ); ?>><?php esc_html_e( 'Circle', 'salert' ); ?></option>
+										</select>
+									</div>
+								</div>
+
+								<div class="salert-divider"></div>
+
+								<div class="salert-field-grid">
+									<?php $this->render_toggle( 'close-btn', __( 'Close button', 'salert' ), __( 'Let visitors dismiss the popup.', 'salert' ) ); ?>
+									<?php $this->render_toggle( 'box-shadow', __( 'Drop shadow', 'salert' ) ); ?>
+									<?php $this->render_toggle( 'enable-resp', __( 'Show on mobile', 'salert' ) ); ?>
+									<?php $this->render_toggle( 'border-enable', __( 'Border', 'salert' ) ); ?>
+								</div>
+
+								<div class="salert-border-options" id="salert-border-options">
+									<div class="salert-field-grid salert-grid-3">
+										<div class="salert-field">
+											<label class="salert-field-title" for="border-color"><?php esc_html_e( 'Border color', 'salert' ); ?></label>
+											<input type="text" class="color-picker" id="border-color" name="border-color" value="<?php echo esc_attr( $s['border-color'] ); ?>">
+										</div>
+										<div class="salert-field">
+											<label class="salert-field-title" for="border-width"><?php esc_html_e( 'Border width (px)', 'salert' ); ?></label>
+											<input type="number" min="0" id="border-width" name="border-width" value="<?php echo esc_attr( $s['border-width'] ); ?>">
+										</div>
+										<div class="salert-field">
+											<label class="salert-field-title" for="border-radius"><?php esc_html_e( 'Corner radius (px)', 'salert' ); ?></label>
+											<input type="number" min="0" id="border-radius" name="border-radius" value="<?php echo esc_attr( $s['border-radius'] ); ?>">
+										</div>
+									</div>
+								</div>
+
+								<div class="salert-premium-row">
+									<span class="dashicons dashicons-lock"></span>
+									<strong><?php esc_html_e( 'Background image', 'salert' ); ?></strong> — <?php esc_html_e( 'available in Pro', 'salert' ); ?>
+									<a href="https://wpoperation.com/plugins/sale-alert/" target="_blank" rel="noopener"><?php esc_html_e( 'Unlock', 'salert' ); ?> →</a>
+								</div>
+							</div>
+						</div>
+
+					</section>
+
+					<!-- ============ CONTENT PANE ============ -->
+					<section class="salert-pane" id="pane-content">
+
+						<div class="salert-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-format-quote"></span> <?php esc_html_e( 'Notification Text', 'salert' ); ?></h2>
+							</header>
+							<div class="salert-card-body">
+								<div class="salert-field">
+									<label class="salert-field-title" for="popup-contents"><?php esc_html_e( 'Message template', 'salert' ); ?></label>
+									<span class="salert-field-desc"><?php esc_html_e( 'Use the placeholders below. Basic HTML allowed.', 'salert' ); ?></span>
+									<textarea rows="4" id="popup-contents" name="popup-contents"><?php echo esc_textarea( $s['popup-contents'] ); ?></textarea>
+									<div class="salert-tags">
+										<code>[name]</code><code>[country]</code><code>[product]</code><code>[time]</code>
+									</div>
+								</div>
+								<div class="salert-premium-row">
+									<span class="dashicons dashicons-lock"></span>
+									<strong><?php esc_html_e( 'Multiple message templates', 'salert' ); ?></strong> — <?php esc_html_e( 'rotate unlimited variations, available in Pro', 'salert' ); ?>
+									<a href="https://wpoperation.com/plugins/sale-alert/" target="_blank" rel="noopener"><?php esc_html_e( 'Unlock', 'salert' ); ?> →</a>
+								</div>
+							</div>
+						</div>
+
+						<div class="salert-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e( 'Names & Countries', 'salert' ); ?></h2>
+							</header>
+							<div class="salert-card-body">
+								<div class="salert-field">
+									<label class="salert-field-title" for="text-separator"><?php esc_html_e( 'List separator', 'salert' ); ?></label>
+									<input type="text" class="salert-input-sm" id="text-separator" name="text-separator" value="<?php echo esc_attr( $s['text-separator'] ); ?>">
+								</div>
+								<div class="salert-field">
+									<label class="salert-field-title" for="popup-names"><?php esc_html_e( 'Person names', 'salert' ); ?></label>
+									<span class="salert-field-desc"><?php esc_html_e( 'Separated by your list separator, e.g. John,Martin,Ram', 'salert' ); ?></span>
+									<textarea rows="3" id="popup-names" name="popup-names"><?php echo esc_textarea( $s['popup-names'] ); ?></textarea>
+								</div>
+								<div class="salert-field">
+									<label class="salert-field-title" for="popup-countries"><?php esc_html_e( 'Countries', 'salert' ); ?></label>
+									<span class="salert-field-desc"><?php esc_html_e( 'Separated by your list separator, e.g. Nepal,USA,Japan', 'salert' ); ?></span>
+									<textarea rows="3" id="popup-countries" name="popup-countries"><?php echo esc_textarea( $s['popup-countries'] ); ?></textarea>
+								</div>
+								<div class="salert-field-grid">
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-timeperiod"><?php esc_html_e( 'Time period labels', 'salert' ); ?></label>
+										<input type="text" id="popup-timeperiod" name="popup-timeperiod" value="<?php echo esc_attr( $s['popup-timeperiod'] ); ?>">
+									</div>
+									<div class="salert-field">
+										<label class="salert-field-title" for="popup-timeago"><?php esc_html_e( '"Ago" text', 'salert' ); ?></label>
+										<input type="text" id="popup-timeago" name="popup-timeago" value="<?php echo esc_attr( $s['popup-timeago'] ); ?>">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="salert-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-cart"></span> <?php esc_html_e( 'Products', 'salert' ); ?></h2>
+								<?php if ( class_exists( 'woocommerce' ) ) : ?>
+									<span class="salert-pro-badge salert-badge-inline"><?php esc_html_e( 'Real orders & Woo products in Pro', 'salert' ); ?></span>
+								<?php endif; ?>
+							</header>
+							<div class="salert-card-body">
+								<fieldset class="salert-input mannual-products">
+									<div class="products-meta-section-wrapper">
+										<div class="table-products-wrapper" id="salert-products-list">
+											<?php
+												$table_product = isset( $s['popup-products'] ) ? $s['popup-products'] : '';
+												$t_count = 0;
+												if ( ! empty( $table_product ) && ! empty( $table_product['title'] ) ) {
+													foreach ( $table_product['title'] as $product => $val ) {
+														$t_count++;
+														$product_image = $table_product['url'][ $product ];
 														?>
-														<p>
-															<input type="checkbox" name="checkfield[]" id="salert-post-<?php echo esc_attr($post_id);?>" value="<?php echo esc_attr($post_id);?>" disabled	/>
-															<label for="salert-post-<?php echo esc_attr($post_id);?>"><?php echo esc_html( $title );?></label>
-														</p>
-														<?php
-													endforeach; 
-													?>
+														<div class="single-product">
+															<div class="salert-product-thumb">
+																<?php if ( ! empty( $product_image ) ) : ?>
+																	<img src="<?php echo esc_url( $product_image ); ?>" alt="">
+																<?php endif; ?>
+															</div>
+															<div class="salert-product-fields">
+																<input type="text" name="popup-products[title][<?php echo esc_attr( $t_count ); ?>]" placeholder="<?php esc_attr_e( 'Product name', 'salert' ); ?>" value="<?php echo esc_attr( $table_product['title'][ $product ] ); ?>" required/>
+																<div class="salert-product-row">
+																	<input type="text" class="salert-image-url" name="popup-products[url][<?php echo esc_attr( $t_count ); ?>]" placeholder="<?php esc_attr_e( 'Image URL', 'salert' ); ?>" value="<?php echo esc_url( $product_image ); ?>">
+																	<button type="button" class="button salert-upload-btn"><span class="dashicons dashicons-upload"></span></button>
+																</div>
+																<input type="text" name="popup-products[link][<?php echo esc_attr( $t_count ); ?>]" placeholder="<?php esc_attr_e( 'Link (https://)', 'salert' ); ?>" value="<?php echo esc_attr( $table_product['link'][ $product ] ); ?>">
+															</div>
+															<button type="button" class="button-link delete-product" aria-label="<?php esc_attr_e( 'Remove product', 'salert' ); ?>"><span class="dashicons dashicons-trash"></span></button>
+														</div>
+													<?php }
+												}
+											?>
+										</div>
+										<input id="table_products_count" type="hidden" name="product-count" value="<?php echo esc_attr( $t_count ); ?>" />
+										<button type="button" class="button docopy-table-product"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e( 'Add Product', 'salert' ); ?></button>
+									</div>
+								</fieldset>
+
+								<?php if ( class_exists( 'woocommerce' ) ) : ?>
+								<div class="salert-premium-row">
+									<span class="dashicons dashicons-lock"></span>
+									<strong><?php esc_html_e( 'Pull real WooCommerce orders & products automatically', 'salert' ); ?></strong> — <a href="https://wpoperation.com/plugins/sale-alert/" target="_blank" rel="noopener"><?php esc_html_e( 'Go Pro', 'salert' ); ?> →</a>
+								</div>
+								<?php endif; ?>
+							</div>
+						</div>
+
+					</section>
+
+					<!-- ============ HELP PANE ============ -->
+					<section class="salert-pane" id="pane-help">
+						<div class="salert-card">
+							<div class="salert-card-body">
+								<?php require_once SALERT_PATH.'inc/how-to-use.php'; ?>
+							</div>
+						</div>
+					</section>
+
+					<!-- ============ MORE PANE ============ -->
+					<!-- ============ FREE VS PRO PANE ============ -->
+					<section class="salert-pane" id="pane-compare">
+						<?php
+						$upgrade_url = 'https://wpoperation.com/plugins/sale-alert/';
+						$rows        = array(
+							array( __( 'Display Sales Notification To Customers', 'salert' ), true, true ),
+							array( __( 'Display Real-time Sales Notification', 'salert' ), false, true ),
+							array( __( 'Add real WooCommerce Products', 'salert' ), false, true ),
+							array( __( 'Popup With Sound', 'salert' ), false, true ),
+							array( __( 'Analytics Dashboard (Click Status)', 'salert' ), false, true ),
+							array( __( 'Product Rating As Popup', 'salert' ), false, true ),
+							array( __( 'Live Preview Configuration', 'salert' ), true, true ),
+							array( __( 'Multiple Modern Templates', 'salert' ), false, true ),
+							array( __( 'Trust Badges', 'salert' ), false, true ),
+							array( __( 'Notification Timer', 'salert' ), false, true ),
+							array( __( 'Multilingual Ready', 'salert' ), __( 'Partially', 'salert' ), __( 'Fully', 'salert' ) ),
+							array( __( 'Translation Ready', 'salert' ), true, true ),
+							array( __( 'Major Browser Compatible', 'salert' ), true, true ),
+							array( __( 'Responsive - Mobile Friendly', 'salert' ), true, true ),
+							array( __( 'Fast and Friendly Support', 'salert' ), false, true ),
+						);
+						$cell        = function ( $v ) {
+							if ( true === $v ) {
+								return '<span class="dashicons dashicons-yes-alt salert-yes"></span><span class="screen-reader-text">' . esc_html__( 'Yes', 'salert' ) . '</span>';
+							}
+							if ( false === $v ) {
+								return '<span class="dashicons dashicons-dismiss salert-no"></span><span class="screen-reader-text">' . esc_html__( 'No', 'salert' ) . '</span>';
+							}
+							return esc_html( $v );
+						};
+						?>
+						<div class="salert-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-star-filled"></span> <?php esc_html_e( 'Free vs Pro', 'salert' ); ?></h2>
+								<a href="<?php echo esc_url( $upgrade_url ); ?>" target="_blank" rel="noopener" class="salert-btn-primary"><?php esc_html_e( 'Upgrade to Pro', 'salert' ); ?></a>
+							</header>
+							<div class="salert-card-body">
+								<table class="salert-compare">
+									<thead>
+										<tr>
+											<th><?php esc_html_e( 'Feature', 'salert' ); ?></th>
+											<th><?php esc_html_e( 'Free', 'salert' ); ?></th>
+											<th class="salert-compare-pro"><?php esc_html_e( 'Pro', 'salert' ); ?></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ( $rows as $row ) : ?>
+											<tr>
+												<td><?php echo esc_html( $row[0] ); ?></td>
+												<td><?php echo $cell( $row[1] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $cell. ?></td>
+												<td class="salert-compare-pro"><?php echo $cell( $row[2] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $cell. ?></td>
+											</tr>
+										<?php endforeach; ?>
+									</tbody>
+								</table>
+								<p class="salert-compare-cta">
+									<a href="<?php echo esc_url( $upgrade_url ); ?>" target="_blank" rel="noopener" class="salert-btn-primary salert-btn-lg"><span class="dashicons dashicons-awards"></span> <?php esc_html_e( 'Upgrade to Salert Pro', 'salert' ); ?></a>
+								</p>
+							</div>
+						</div>
+					</section>
+
+					<section class="salert-pane" id="pane-more">
+						<div class="salert-more-grid">
+							<div class="salert-card salert-promo">
+								<span class="dashicons dashicons-admin-appearance"></span>
+								<h3><?php esc_html_e( 'Try Our Themes', 'salert' ); ?></h3>
+								<p><?php esc_html_e( 'Looking for stunning WordPress themes? Why not try ours?', 'salert' ); ?></p>
+								<a href="https://wpoperation.com/themes/" target="_blank" rel="noopener" class="salert-btn-primary"><?php esc_html_e( 'View Themes', 'salert' ); ?></a>
+							</div>
+							<div class="salert-card salert-promo">
+								<span class="dashicons dashicons-sos"></span>
+								<h3><?php esc_html_e( 'Need Help?', 'salert' ); ?></h3>
+								<p><?php esc_html_e( 'Our support team is always ready for your questions.', 'salert' ); ?></p>
+								<a href="https://wpoperation.com/contact" target="_blank" rel="noopener" class="salert-btn-secondary"><?php esc_html_e( 'Create Ticket', 'salert' ); ?></a>
+							</div>
+							<div class="salert-card salert-promo salert-promo-pro">
+								<span class="dashicons dashicons-awards"></span>
+								<h3><?php esc_html_e( 'Salert Pro', 'salert' ); ?></h3>
+								<p><?php esc_html_e( 'Real WooCommerce orders, sounds, page targeting, background images & more.', 'salert' ); ?></p>
+								<a href="https://wpoperation.com/plugins/sale-alert/" target="_blank" rel="noopener" class="salert-btn-primary"><?php esc_html_e( 'Upgrade Now', 'salert' ); ?></a>
+							</div>
+						</div>
+					</section>
+
+				</div><!-- /.salert-main -->
+
+				<!-- Live Preview -->
+				<aside class="salert-preview-col">
+					<div class="salert-preview-sticky">
+						<div class="salert-card salert-preview-card">
+							<header class="salert-card-head">
+								<h2><span class="dashicons dashicons-visibility"></span> <?php esc_html_e( 'Live Preview', 'salert' ); ?></h2>
+								<button type="button" class="button-link salert-replay" id="salert-replay" title="<?php esc_attr_e( 'Replay animation', 'salert' ); ?>"><span class="dashicons dashicons-update"></span></button>
+							</header>
+							<div class="salert-preview-stage">
+								<div class="salert-device">
+									<div class="salert-device-bar"><span></span><span></span><span></span></div>
+									<div class="salert-device-body">
+										<div class="popup_position bottomRight" id="salert-preview-position">
+											<div class="popup_template clearfix animated border radius boxs" id="popup_template">
+												<div class="popup-item clearfix">
+													<span class="close btn-close"><button type="button" class="close-btn-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span>
+													<img class="pimg" src="<?php echo esc_url( plugin_dir_url( __FILE__ ).'images/100.png' ); ?>" alt="">
+													<p>
+														<?php esc_html_e( 'John from Australia has just purchased', 'salert' ); ?><br>
+														<small class="time"><?php esc_html_e( '16 mins ago', 'salert' ); ?></small>
+													</p>
 												</div>
 											</div>
-											<?php
-										endif;
-									}	
-								}
-								?>
-							    </fieldset>
-	                        </div>
-	                    </div> 
-	                    <?php 
-					    /*=========================
-					    * Include Pages
-					    * =========================*/
-	                    ?>     
-					    <div class="salert-includepage-settings general-tab-pane clearfix" style="display:none">
-					    	<div class="main-title">
-					    		<div><?php esc_html_e('Include Pages','salert');?></div>
-					    		<small class="title-desc"><?php esc_html_e('Only these pages will show the popups.','salert');?></small>
-					    	</div>
-					    	<div class="main-content">
-					    		<pre class="premium">Premium Feature</pre>
-	                            <fieldset class="sale_alert-input">
-	                                <label><?php esc_html_e('Page Ids','salert');?></label>
-	                            	<textarea rows="10" cols="50" name="" disabled></textarea>
-	                            </fieldset>
-	                            <small class="title-desc"><?php esc_html_e('Add page id\'s Seperated with comma. For eg:(123,456,245)','salert');?></small>
-				    		</div>
-					    </div>	
-					</div> <!-- .general-settings-section -->   
-				    <?php 
-				    /*=========================
-				    * Preview Section
-				    * =========================*/
-				    ?>
-		 			<div class="salert-backend-preview sale_alert_wrapper">
-		 				<img src="<?php echo plugin_dir_url( __FILE__ ).'images/desktop.png';?>" style="width: 100%">
-		 				<div class="popup_position bottomRight" >
-		 					<div class="popup_template clearfix animated border radius" id="popup_template">
-		 					   <div class="popup-item clearfix">
-		 					   	    <span class="close btn-close"><button class="close-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span>
-			 						<img class="pimg" src="<?php echo plugin_dir_url( __FILE__ ).'images/100.png';?>">
-			 						<p>
-			 							<?php esc_html_e('Someone Purchased an Item','salert'); ?> <br>
-			 							<?php esc_html_e('From Nepal','salert'); ?><br>
-			 							<small class="time"><?php esc_html_e('16 min ago','salert'); ?></small>
-			 						</p>
-		 						</div>
-		 					</div>
-		 				</div>
-		 			</div>	
-			    </div><!--salert-main-settings general -->	
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</aside>
 
-				<div class="salert-main-settings tab-pane display" style="display:none">
-				    <?php 
-				    /*=========================
-				    * Choose woo display
-				   *============================*/
-				    ?>
-				    <?php if(class_exists('woocommerce')):?>
-                        <fieldset class="salert-input">
-                            <label><?php esc_html_e('Show From Woocommerce Orders','salert');?></label>
-                        	<input class="chk-woo" type="checkbox" name="" value="" disabled>
-                        	<small><?php esc_html_e('Check if you want to display from Woocommerce Product Orders.','salert');?></small>
-                        	<pre class="premium"><?php esc_html_e('Premium Feature','salert') ?></pre>
-                        </fieldset>
-			    	<?php endif;?>
-				    <?php 
-					/*=========================
-				    * Text Separator
-				   *============================*/
-				    ?>
-				    <div class="mannual-contents">
-					<fieldset class="salert-input">
-						<label class="title"><?php echo esc_html__( 'Text Separator', 'salert' ); ?></label><br>
-						<small class="title-desc"><?php echo esc_html__( 'Add Separator to seperate names and countries.For eg(,)', 'salert' ); ?></small>
-                        <input type="text" name="text-separator" value="<?php echo $this->salert_get_settings['text-separator'];?>" />
-			    	</fieldset> 
-				    <?php 
-				    /*=========================
-				    * Display Names
-				   *============================*/
-				    ?>
-					<fieldset class="salert-input">
-						<label class="title"><?php echo esc_html__( 'Enter Person Names', 'salert' ); ?></label><br>
-						<small class="title-desc"><?php echo esc_html__( 'Enter Name of Persons and use above separator.(eg:John,Martin,Ram)', 'salert' ); ?></small>
-                        <textarea rows="10" cols="50" name="popup-names"><?php echo $this->salert_get_settings['popup-names'];?></textarea>
-			    	</fieldset> 
-				    <?php 
-				    /*=========================
-				    * Display Countries
-				   *============================*/
-				    ?>
-					<fieldset class="salert-input">
-						<label class="title"><?php echo esc_html__( 'Enter Country Names', 'salert' ); ?></label><br>
-						<small class="title-desc"><?php echo esc_html__( 'Enter Name of Contries and use above separator.(eg:Nepal,USA,Japan)', 'salert' ); ?></small>
-                        <textarea rows="10" cols="50" name="popup-countries"><?php echo $this->salert_get_settings['popup-countries'];?></textarea>
-			    	</fieldset> 
+			</div><!-- /.salert-layout -->
 
-                    <fieldset class="salert-input">
-						<label class="title"><?php echo esc_html__( 'Enter Time Period', 'salert' ); ?></label><br>
-						<small class="title-desc"><?php echo esc_html__( 'Enter Time Period and use above separator.(eg:hours,mins,sec)', 'salert' ); ?></small>
-                        <textarea rows="5" cols="50" name="popup-timeperiod"><?php echo $this->salert_get_settings['popup-timeperiod'];?></textarea>
-			    	</fieldset>
+			<!-- Sticky Save Bar -->
+			<div class="salert-savebar">
+				<span class="save-notice"><span class="dashicons dashicons-warning"></span> <?php esc_html_e( 'You have unsaved changes', 'salert' ); ?></span>
+				<span class="salert-savebar-spacer"></span>
+				<button type="submit" class="button button-primary salert-btn"><span class="dashicons dashicons-saved"></span> <?php esc_html_e( 'Save Settings', 'salert' ); ?></button>
+			</div>
 
-                    <fieldset class="salert-input">
-						<label class="title"><?php echo esc_html__( 'Ago Text', 'salert' ); ?></label><br>
-						<small class="title-desc"><?php echo esc_html__( 'ago text', 'salert' ); ?></small>
-                        <input type="text" name="popup-timeago" value="<?php echo $this->salert_get_settings['popup-timeago'];?>" />
-			    	</fieldset> 
-				    <?php 
-				    /*=========================
-				    * Display Products
-				   *============================*/
-				    ?>
-				    <?php if(class_exists('woocommerce')):?>
-                    <fieldset class="salert-input">
-                        <label><?php esc_html_e('Show From Woocommerce Products','salert');?></label>
-                    	<input class="woo-product" type="checkbox" name="" value="" disabled>
-                    	<small><?php esc_html_e('Real Woocommerce Products will be shown in popup.','salert') ?></small>
-                    	<pre class="premium"><?php esc_html_e('Premium Feature','salert') ?></pre>
-                    </fieldset>
-                    <?php endif; ?>
-					<fieldset class="salert-input mannual-products">
-					    <label class="title"><?php echo esc_html__( 'Add Custom Products', 'salert' ); ?></label><br>
-					    <div class="products-meta-section-wrapper">
-					        <div class="table-products-wrapper">
-					            <?php
-							 		$popup_product = $this->salert_get_settings['popup-products'];
-							 		$key_count = $this->salert_get_settings['product-count'];
-					                $table_product = ( isset( $popup_product ) ) ? $popup_product : '';  
-
-					                $table_product_count = ( isset( $key_count ) ) ? $key_count : ''; 
-					                $t_count = 0;
-					                if(!empty($table_product)){
-					                foreach ($table_product['title'] as $product => $val) {
-					                  $t_count++;
-					                $product_image = $table_product['url'][$product]; 
-
-
-					            ?>
-
-					                <div class="single-product">
-					                    <div class="single-section-title clearfix">
-					                        <h4 class="product-title fleft"><?php esc_html_e( "Procuct name ", 'salert' ); echo $t_count.' :';?></h4>
-					                       
-					                        <div class="product-inputfield fleft">
-					                            <input type="text" name="popup-products[title][<?php echo $t_count ;?>]" value="<?php echo esc_attr( $table_product['title'][$product] ); ?>" required/>
-					                        </div>
-					                        <div class="product-imagefield fleft clearfix">
-							                    <input type="text" name="popup-products[url][<?php echo $t_count ;?>]" placeholder="http://path/to/image.png" value="<?php echo esc_url( $product_image ); ?>">
-							                    <span class="sme_galimg_ctrl">
-							                        <a class="sme_add_galimg" href="#"><?php esc_html_e('Upload','salert'); ?></a> 
-							                    </span>
-							                    <?php if($product_image!=''){?>
-							                    <span class="prd-image"><img style="height:60px; width:60px;" src="<?php echo esc_url( $product_image ); ?>"></span>
-					                            <?php }?>
-					                        </div>
-					                        <div class="product-link fleft clearfix">
-					                        	<input type="text" name="popup-products[link][<?php echo $t_count;?>]" placeholder="http://" value="<?php echo esc_attr( $table_product['link'][$product] ); ?>">
-					                        </div>
-					                        <div class="delete-table-product fleft"><a href="javascript:void(0)" class="delete-product button"><?php esc_html_e('Delete Product','salert'); ?></a></div>
-					                    </div>
-					                </div>
-					            <?php } }  ?>
-					        </div>
-					        <input id="table_products_count" type="hidden" name="product-count" value="<?php echo $t_count; ?>" />
-					        <span class="add-button table-products"><a href="javascript:void(0)" class="docopy-table-product button"><?php esc_html_e('Add Product','salert'); ?></a></span>
-					    </div>
-					</fieldset> 
-				    </div>
-				    <?php 
-				    /*=========================
-				    * Display Texts
-				   *============================*/
-				    ?>
-					<fieldset class="salert-input">
-						<label class="title"><?php echo esc_html__( 'Display Texts In Popup', 'salert' ); ?></label><br>
-						<small class="title-desc"><?php echo esc_html__( 'Enter your contents along with [name],[country],[product] and [time]. HTML characters are allowed here.', 'salert' ); ?></small>
-						<div class="content-field">
-                        <textarea rows="10" cols="50" name="popup-contents"><?php echo $this->salert_get_settings['popup-contents'];?></textarea>
-
-						<span class="add-button add-content-field"><a href="javascript:void(0)" class="copy-content-field button"><?php esc_html_e('Add Field','sale-alert'); ?></a></span>
-						<pre><?php esc_html_e('Add Unlimited Popup Contents.','salert') ?></pre>
-						<pre class="premium"><?php esc_html_e('Premium Feature','salert') ?></pre>
-                        </div>
-			    	</fieldset>  
-
-				</div><!--salert-main-settings display -->
-                <div class="salert-main-settings tab-pane howtouse" style="display:none">
-                    <?php require_once SALERT_PATH.'inc/how-to-use.php'; ?>
-                </div><!--salert-main-settings howtouse -->	
-                <div class="salert-main-settings tab-pane others" style="display:none">
-                	<div class="wp-op-products">
-                        <div class="theme-wrapper">
-                         <h3><?php echo esc_html__('Try Our Themes','salert');?></h3>
-                         <div><?php echo esc_html__('Looking for stunning WordPress themes, why not try with ours?','salert');?></div>
-                         <br>
-                         <a href="https://wpoperation.com/themes/" target="_blank" class="button button-primary"><?php echo esc_html__('View Themes','salert');?></a>
-                        </div>
-                        
-                        <div class="support-wrapp">
-                            <h3><?php echo esc_html__('Looking For Help?','salert');?></h3>
-                            <div><?php echo esc_html__('Our support team is always waiting for your questings.','salert');?></div>
-                            <br>
-                            <a href="https://wpoperation.com/contact" target="_blank" class="button button-secondary"><?php echo esc_html__('Create Ticket','salert');?></a>
-                        </div>
-                    </div>
-                </div><!--salert-main-settings others -->	
-                <div class="salert-main-settings tab-pane premium-tab" style="display:none">
-                	<h2><?php esc_html_e('Premium Version Features','salert'); ?></h2>
-                	<hr>
-                	<ul>
-						<li><strong><?php esc_html_e('More than one different popup contents.(NEW)','salert') ?></strong></li>
-                		<li><?php esc_html_e('Sales Notifications','salert'); ?></li>
-                		<li><?php esc_html_e('Real Time Notification','salert'); ?></li>
-                		<li><?php esc_html_e('Notification Alert Sounds','salert'); ?></li>
-                		<li><?php esc_html_e('Advanced customization options','salert'); ?></li>
-                		<li><?php esc_html_e('Fake Notifications with woo commerce Products.','salert') ?></li>
-                		<li><?php esc_html_e('Color and Background Option','salert'); ?></li>
-                		<li><?php esc_html_e('Show popup to specific pages(Include and Exclude option)','salert'); ?></li>
-                	</ul>
-                	<a href="https://wpoperation.com/plugins/sale-alert/" target="_blank" class="button button-primary">
-                		<?php esc_html_e('Get Pro Version','salert'); ?>
-					</a>
-					<hr>
-					<h2><?php esc_html_e('Spread Your Love With 5 Star Rating','salert'); ?></h2>
-					<span><?php esc_html_e('If you are enjoying our plugin please support us with nice rating, so that we can be encouraged to update this product constantly to make it better.','salert'); ?></span>
-					<br>
-					<br>
-					<a href="https://wordpress.org/support/plugin/salert/reviews/#new-post" target="_blank" class="button-secondary">
-                		<?php esc_html_e('Rate Now','salert'); ?>
-					</a>
-                </div><!--salert-main-settings premium tab -->	
-
-                <?php /* Save Button */?>
-				<div class="salert-save-btn-wrap">
-					<input type="submit" value="Save settings" class="button salert-btn"/>
-				</div>
-			</form>	
- 		</div>
- 		</div>
- 		<?php
- 	}
+			</form>
+		</div>
+		<?php
+	}
 
 		/**
 		 * @since 1.2.3
 		 * Sanitize array or string
-		 *  
-		 * */	
+		 * */
 		public function sanitize_form_setting_array($input){
 
 			if( is_string($input) ){
@@ -681,7 +585,7 @@ class Salert_Admin_Settings {
 			return $input;
 		}
 
- 	public function salert_save_settings_with_ajax(){
+	public function salert_save_settings_with_ajax(){
 		if( isset( $_POST['fields'] ) ) {
 			parse_str( $_POST['fields'], $settings );
 		}else {
@@ -700,7 +604,7 @@ class Salert_Admin_Settings {
 		    'image-style' 				=> sanitize_text_field($settings['image-style']),
 		    'bg-color' 					=> sanitize_hex_color($settings['bg-color']),
 		    'container-width' 			=> sanitize_text_field($settings['container-width']),
-            'inner-padding' 			=> sanitize_text_field($settings['inner-padding']),
+		    'inner-padding' 			=> sanitize_text_field($settings['inner-padding']),
 			'border-enable' 			=> (int) isset($settings['border-enable']),
 			'border-color' 				=> sanitize_hex_color($settings['border-color']),
 			'border-width' 				=> sanitize_text_field($settings['border-width']),
@@ -716,16 +620,14 @@ class Salert_Admin_Settings {
 			'product-count' 			=> sanitize_text_field($settings['product-count']),
 			'popup-contents' 			=> wp_kses_post($settings['popup-contents']),
 			'close-btn' 				=> sanitize_text_field($settings['close-btn']),
-            'enable-resp' 				=> (int) isset($settings['enable-resp']),
-            'box-shadow'				=> (int) isset($settings['box-shadow']),
-            'text-separator' 			=> sanitize_text_field($settings['text-separator'])
-
+			'enable-resp' 				=> (int) isset($settings['enable-resp']),
+			'box-shadow'				=> (int) isset($settings['box-shadow']),
+			'text-separator' 			=> sanitize_text_field($settings['text-separator'])
 		);
 		check_ajax_referer('salert_ajax_nonce_wpop','security');
 		update_option( 'salert_save_settings', $this->salert_settings );
-		return true;
-		die();
- 	}
+		wp_send_json_success();
+	}
 
 }
 

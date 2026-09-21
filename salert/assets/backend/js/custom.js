@@ -1,217 +1,229 @@
-jQuery(document).ready(function($) {
-    'use strict';
+/**
+ * Salert Admin JS — Modern UI (2026 redesign)
+ * Save endpoint & field names unchanged from v1.3.1.
+ */
+jQuery(document).ready(function ($) {
+	'use strict';
 
-    // Save Button reacting on any changes
-    var footerSaveBtn = $('.salert-save-btn-wrap .salert-btn');
-    $('.salert-input input, .salert-input textarea, .salert-input select').on('click', function() {
-        footerSaveBtn.addClass('save-now');
-        $('.save-notice').slideDown();
-    });
-console.log(admin_settings.ajax_nonce);
-    // Saving Data With Ajax Request
-    $('form#salert-settings-form').on('submit', function(e) {
-        e.preventDefault();
+	var $form = $('form#salert-settings-form');
+	var $saveBtn = $('.salert-savebar .salert-btn');
+	var $notice = $('.salert-savebar .save-notice');
+	var $template = $('#popup_template');
 
-        $.ajax({
-            url: ajaxurl,
-            type: 'post',
-            data: {
-                action: 'salert_save_settings_with_ajax',
-                security: admin_settings.ajax_nonce,
-                fields: $('form#salert-settings-form').serialize(),
-            },
-            success: function(response) {
-                swal({
-                    type: 'success',
-                    title: 'Settings Saved!',
-                    showConfirmButton: false,
-                    timer: 2000,
-                });
-                footerSaveBtn.removeClass('save-now');
-                $('.save-notice').slideUp();
-            },
-            error: function() {
-                swal(
-                    'Oops...',
-                    'Something went wrong!',
-                    'error'
-                );
-            }
-        });
-    });
+	/* ===== Sidebar navigation ===== */
+	$('.salert-nav-item').on('click', function () {
+		var pane = $(this).data('pane');
+		$('.salert-nav-item').removeClass('active');
+		$(this).addClass('active');
+		$('.salert-pane').removeClass('active');
+		$('#' + pane).addClass('active');
+	});
 
-    //main tabs
-    $(".salert-settings-tab .tab-wrap li").click(function(e) {
-        e.preventDefault();
-        var self = $(this);
-        var dispstyle = self.attr("data-id");
+	/* ===== Dirty-state tracking ===== */
+	var initialized = false; // programmatic .trigger('change') during setup must not mark the form dirty
+	function markDirty() {
+		if (!initialized) { return; }
+		$saveBtn.addClass('save-now');
+		$notice.addClass('visible');
+	}
+	$form.on('input change', 'input, textarea, select', markDirty);
 
-        $(".tab-pane").hide();
-        $(".salert-settings-tab .tab-wrap li").removeClass('active');
-        self.closest('li').addClass('active');
-        $("." + dispstyle + "").fadeIn();
-    });
+	/* ===== Save via AJAX ===== */
+	$form.on('submit', function (e) {
+		e.preventDefault();
 
-    //main tabs
-    $(".general-settings-section .general-tab-wrap li").click(function(e) {
-        e.preventDefault();
-        var self = $(this);
-        var dispstyle1 = self.attr("data-id");
+		var $btnLabel = $saveBtn.html();
+		$saveBtn.prop('disabled', true);
 
-        $(".general-tab-pane").hide();
-        $(".general-settings-section .general-tab-wrap li").removeClass('active');
-        self.closest('li').addClass('active');
-        $("." + dispstyle1 + "").fadeIn();
-    });
+		$.ajax({
+			url: admin_settings.ajax_url,
+			type: 'post',
+			data: {
+				action: 'salert_save_settings_with_ajax',
+				security: admin_settings.ajax_nonce,
+				fields: $form.serialize()
+			},
+			success: function () {
+				swal({
+					type: 'success',
+					title: 'Settings Saved!',
+					showConfirmButton: false,
+					timer: 2000
+				});
+				$saveBtn.removeClass('save-now').prop('disabled', false);
+				$notice.removeClass('visible');
+			},
+			error: function () {
+				$saveBtn.prop('disabled', false);
+				swal('Oops...', 'Something went wrong!', 'error');
+			}
+		});
+	});
 
-    //toggle for mannual post types
-    $('.salert-toggle-tab-header').on('click',function(){   
-        $(this).toggleClass('salert-toggle-active');
-        $(this).siblings('.salert-toggle-tab-body').slideToggle();
-    });
+	/* ===== Color pickers → live preview ===== */
+	$('#bg-color').wpColorPicker({
+		change: function (e, ui) { $template.css('background-color', ui.color.toString()); },
+		clear: function () { $template.css('background-color', '#fff'); }
+	});
+	$('#text-color').wpColorPicker({
+		change: function (e, ui) { $template.css('color', ui.color.toString()); },
+		clear: function () { $template.css('color', '#000'); }
+	});
+	$('#border-color').wpColorPicker({
+		change: function (e, ui) { $template.css('border-color', ui.color.toString()); },
+		clear: function () { $template.css('border-color', '#e0e0e0'); }
+	});
 
-    /* For repeater products */
-    var tCount = $('#table_products_count').val();
+	// Initial color state
+	$template.css('background-color', $('#bg-color').val());
+	$template.css('color', $('#text-color').val());
 
-    $('.docopy-table-product').click(function() {
-        tCount++;
-        $('.table-products-wrapper').append('<div class="single-product wp-dynamic"><div class="single-section-title clearfix"><h4 class="product-title fleft">Product ' + tCount + ' : </h4>' +
-            '<div class="product-inputfield fleft"><input type="text" name="popup-products[title][' + tCount + ']" value="" required/></div>' +
-            '<div class="product-imagefield fleft clearfix"><input type="text" name="popup-products[url][' + tCount + ']" placeholder="http://path/to/image.png" value="">' +
-            '<span class="sme_galimg_ctrl"><a class="sme_add_galimg" href="#">Upload</a></span></div>' +
-            '<div class="product-link fleft clearfix"><input type="text" placeholder="http://" name="popup-products[link][' + tCount + ']"></div>' +
-            '<div class="delete-table-product fleft"><a href="javascript:void(0)" class="delete-product button">Delete Product</a></div>' +
-            '</div></div>'
-        );
-    });
-    $(document).on('click', '.delete-table-product > a', function() {
-        $(this).parents('.single-product').remove();
-    });
+	/* ===== Numeric inputs → live preview ===== */
+	function applyNum($el, prop, suffix) {
+		var v = parseInt($el.val(), 10);
+		if (isNaN(v)) { v = 0; }
+		$template.css(prop, v + (suffix || ''));
+	}
+	applyNum($('#font-size'), 'fontSize', 'px');
+	applyNum($('#inner-padding'), 'padding');
+	applyNum($('#container-width'), 'width', 'px');
 
-    /** Upload Product Image **/
-    $(document).on('click', '.sme_galimg_ctrl .sme_add_galimg', function(e) {
-        e.preventDefault();
-        var $this = $(this);
-        var image = wp.media({
-                title: 'Upload Image',
-                // mutiple: true if you want to upload multiple files at once
-                multiple: false
-            }).open()
-            .on('select', function(e) {
-                // This will return the selected image from the Media Uploader, the result is an object
-                var uploaded_image = image.state().get('selection').first();
-                // We convert uploaded_image to a JSON object to make accessing it easier
-                // Output to the console uploaded_image
-                var image_url = uploaded_image.toJSON().url;
-                // Let's assign the url value to the input field
-                $this.parent('.sme_galimg_ctrl').prev('input').val(image_url);
-                $this.parents('.general-settings-section').siblings('.salert-backend-preview').find('.popup_template').css('background-image', 'url(' + image_url + ')');
-            });
-    });
+	$form.on('input', '#font-size', function () { applyNum($(this), 'fontSize', 'px'); });
+	$form.on('input', '#container-width', function () { applyNum($(this), 'width', 'px'); });
 
-    //Display Contents
-    $('.mannual-contents').show();
-    if ($('body .chk-woo').is(':checked')) {
-        $('.mannual-contents').hide();
-    }
-    $('body').on('click', '.chk-woo', function() {
-        $('.mannual-contents').toggle();
-    });
+	$form.on('input', '#inner-padding', function () {
+		$template.find('.popup-item').css('padding', parseInt($(this).val(), 10) + 'px');
+	});
+	$template.find('.popup-item').css('padding', parseInt($('#inner-padding').val(), 10) + 'px');
 
-    //Close btn
-    var close = $('.popup-item .close');
-    close.hide();
-    if ($('body .close-btn').is(':checked')) {
-        close.show();
-    }
-    $('body').on('click', '.close-btn', function() {
-        close.toggle();
-    });
+	/* ===== Selects → live preview ===== */
+	$('#popup-position').on('change', function () {
+		$('#salert-preview-position')
+			.removeClass('pos-topLeft pos-topRight pos-bottomLeft pos-bottomRight')
+			.addClass('pos-' + $(this).val());
+	}).trigger('change');
 
+	$('#image-position').on('change', function () {
+		var cls = ['imageOnLeft', 'imageOnRight', 'textOnly'];
+		cls.forEach(function (c) { $template.removeClass(c); });
+		$template.addClass($(this).val());
+	});
 
-    //border enable
-    $('.salert-border-options').hide();
-    if ($('body .chk-border').is(':checked')) {
-        $('.salert-border-options').show();
-    }
-    $('body').on('click', '.chk-border', function() {
-        $('.salert-border-options').toggle();
-    });
+	$('#image-style').on('change', function () {
+		if ($(this).val() === 'circle') {
+			$template.find('img.pimg').css('border-radius', '50%');
+		} else {
+			$template.find('img.pimg').css('border-radius', '0');
+		}
+	}).trigger('change');
 
-    //border enable live preview
-    var ptemmplate = $('.popup_template');
-    $('body').on('change', '.chk-border', function() {
-        ptemmplate.toggleClass('border');
-    });
-    if ($('body .chk-border').is(':checked')) {
-        ptemmplate.removeClass('radius');
-        $('body').on('change', '.chk-border', function() {
-            ptemmplate.toggleClass('b-radius');
-        });
-    } else {
-        $('body').on('change', '.chk-border', function() {
-            ptemmplate.toggleClass('radius');
-        });
-    }
+	$('#text-transform').on('change', function () {
+		$template.css('text-transform', $(this).val());
+	}).trigger('change');
 
+	/* ===== Toggles ===== */
+	// Close button
+	(function () {
+		var $close = $template.find('.close');
+		function apply(checked) { checked ? $close.show() : $close.hide(); }
+		$form.on('change', 'input[name="close-btn"]', function () { apply($(this).is(':checked')); });
+		apply($('input[name="close-btn"]').is(':checked'));
+	})();
 
+	// Box shadow
+	(function () {
+		function apply(checked) { $template.toggleClass('boxs', checked); }
+		$form.on('change', 'input[name="box-shadow"]', function () { apply($(this).is(':checked')); });
+		apply($('input[name="box-shadow"]').is(':checked'));
+	})();
 
-    //Border Color picker
-    $("#popup_bordercolor").wpColorPicker(
-        'option',
-        'change',
-        function(event, ui) {
-            var color = ui.color.toString();
-            var destination = $('.popup_template');
-            destination.css('border-color', color);
-        }
-    );
+	// Border enable
+	(function () {
+		function apply(checked) {
+			$template.toggleClass('border', checked);
+			$('#salert-border-options').toggleClass('visible', checked);
+		}
+		$form.on('change', 'input[name="border-enable"]', function () { apply($(this).is(':checked')); });
+		apply($('input[name="border-enable"]').is(':checked'));
+	})();
 
-    //on load
-    var border_color = $('#popup_bordercolor').val();
-    $('.popup_template.border').css('border-color', border_color);
+	// Border radius / width
+	function applyBorderRadius() { $template.css('border-radius', (parseInt($('#border-radius').val(), 10) || 0) + 'px'); }
+	function applyBorderWidth() { $template.css('border-width', (parseInt($('#border-width').val(), 10) || 0) + 'px'); }
+	applyBorderRadius();
+	applyBorderWidth();
+	$form.on('input', '#border-radius', applyBorderRadius);
+	$form.on('input', '#border-width', applyBorderWidth);
 
+	/* ===== Replay animation ===== */
+	$('#salert-replay').on('click', function () {
+		var anim = $('#popup-animation').val();
+		$template.removeClass('animated ' + anim);
+		void $template[0].offsetWidth; // force reflow to restart CSS animation
+		$template.addClass('animated ' + anim);
+	});
 
-    //Border Radius
-    function salert_border_radius() {
-        var border_radius = $('#salert-border-radius').val();
-        $('.popup_template.border').css({
-            "border-radius": border_radius + "px"
-        });
-    }
-    salert_border_radius();
-    $('body').on('keyup', '#salert-border-radius', function() {
-        salert_border_radius();
-    });
+	$('#popup-animation').on('change', function () {
+		$('#salert-replay').trigger('click');
+	});
 
-    //Border Width
-    function salert_border_width() {
-        var border_width = $('#salert-border-width').val();
-        $('.popup_template.border').css('border-width', border_width);
-    }
-    salert_border_width();
-    $('body').on('keyup', '#salert-border-width', function() {
-        salert_border_width();
-    });
+	/* ===== Message template tag insertion ===== */
+	$('.salert-tags code').on('click', function () {
+		var $ta = $('#popup-contents');
+		$ta.val($ta.val() + $(this).text()).focus();
+		markDirty();
+	});
 
-     //box shadow
-    var bxShadow = $('.popup_template');
-    if ($('body .chk-boxs').is(':checked')) {
-        bxShadow.addClass('boxs');
-        $('body').on('change', '.chk-boxs', function() {
-            bxShadow.toggleClass('boxs');
-        });
-    } else {
-        $('body').on('change', '.chk-boxs', function() {
-            bxShadow.toggleClass('boxs');
-        });
-    }
+	/* ===== Products repeater ===== */
+	var tCount = parseInt($('#table_products_count').val(), 10) || 0;
 
-    //on load Border enable
-    if ($('body .chk-border').is(':checked')) {
-        return;
-    } else {
-        $('.popup_template').removeClass('border');
-    }
+	$(document).on('click', '.docopy-table-product', function () {
+		tCount++;
+		$('#table_products_count').val(tCount);
+		var html =
+			'<div class="single-product">' +
+				'<div class="salert-product-thumb"></div>' +
+				'<div class="salert-product-fields">' +
+					'<input type="text" name="popup-products[title][' + tCount + ']" placeholder="Product name" value="" required/>' +
+					'<div class="salert-product-row">' +
+						'<input type="text" class="salert-image-url" name="popup-products[url][' + tCount + ']" placeholder="Image URL" value="">' +
+						'<button type="button" class="button salert-upload-btn"><span class="dashicons dashicons-upload"></span></button>' +
+					'</div>' +
+					'<input type="text" name="popup-products[link][' + tCount + ']" placeholder="Link (https://)" value="">' +
+				'</div>' +
+				'<button type="button" class="button-link delete-product" aria-label="Remove product"><span class="dashicons dashicons-trash"></span></button>' +
+			'</div>';
+		$('#salert-products-list').append(html);
+		markDirty();
+	});
 
+	$(document).on('click', '.delete-product', function () {
+		$(this).closest('.single-product').remove();
+		markDirty();
+	});
+
+	// Live thumbnail from image URL
+	$(document).on('input', '.salert-image-url', function () {
+		var url = $(this).val();
+		var $thumb = $(this).closest('.single-product').find('.salert-product-thumb');
+		if (url) {
+			$thumb.html('<img src="' + url + '" alt="">');
+		} else {
+			$thumb.empty();
+		}
+	});
+
+	/* ===== Media uploader ===== */
+	$(document).on('click', '.salert-upload-btn', function (e) {
+		e.preventDefault();
+		var $row = $(this).closest('.single-product');
+		var image = wp.media({
+			title: 'Select Product Image',
+			multiple: false
+		}).open().on('select', function () {
+			var attachment = image.state().get('selection').first().toJSON();
+			$row.find('.salert-image-url').val(attachment.url).trigger('input');
+		});
+	});
+	initialized = true;
 });
