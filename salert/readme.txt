@@ -55,24 +55,6 @@ Ready to take your social proof further? **[Upgrade to Salert Pro](https://wpope
 * **Full multilingual support** – works with WPML and Polylang.
 * **Fast and friendly premium support.**
 
-= Free vs Pro =
-
-| Feature | Free | Pro |
-|---|---|---|
-| Sales notification popups | Yes | Yes |
-| Live preview | Yes | Yes |
-| Real-time WooCommerce sales | No | Yes |
-| Real WooCommerce products | No | Yes |
-| Popup with sound | No | Yes |
-| Analytics dashboard | No | Yes |
-| Review Popup | No | Yes |
-| Multiple templates | No | Yes |
-| Trust badges | No | Yes |
-| Notification timer | No | Yes |
-| Multilingual | Partial | Full |
-| Premium support | No | Yes |
-
-= 🚀 [Upgrade to Salert Pro Now](https://wpoperation.com/plugins/sale-alert/) =
 
 == Installation ==
 
